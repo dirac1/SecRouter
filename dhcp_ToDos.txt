@@ -1,0 +1,5 @@
+# 2018-03-15
+o Fix the CoW function 
+o Add the other files being used in the dhcp server to the enable and disable script
+o Change the dhcp_server.py to a function
+o Create a github for this directory
