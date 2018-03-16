@@ -1,6 +1,7 @@
 import os
 import re
 import fileinput
+import paramiko
 
 Interface = 'eth0'
 dhcp_dir = os.listdir('/home/dirac/fake_etc')

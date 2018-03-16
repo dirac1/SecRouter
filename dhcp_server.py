@@ -23,20 +23,12 @@ Servers = ''
 
 # -------------------------- Check or Write  -----------------------------
 # function to check if the file contain the value, if it isn't there the function will write it  
-# THE FUNCTION HAS A PROBLEM CLOSING THE FILE
 def cow(file_dir,data):
-    input_file = open(file_dir,'r')
-    found = False
-    while not found:
-        for line in input_file:
-            if data in line:
-                found = True
-                break
-        else:
-            input_file = open(file_dir,'a')
-            input_file.write(data + '\n')
-            input_file.close()
-    input_file.close()
+     with open(file_dir,'r+') as input_file:
+         lines = [line.strip().replace('\n','') for line in input_file.readlines()]
+         if data not in lines:
+            print("Data not found")
+            input_file.write(data)
 
 # -------------------------- IP calculations -----------------------------
 Netmask = str(ipaddress.ip_network(Network).netmask) # makes the Netmask calculation using the variable Network
@@ -54,19 +46,25 @@ Range_Valid = False if Pool_Range_Size - Pool_Network_Size > 0 else True #Check 
 Lease_Time_secs = int(Lease_Time[0])*3600+int(Lease_Time[1])*60+int(Lease_Time[2])
 
 #------------------ Writing on /etc/default/isc-dhcp-server -----------------------------
-data1 = 'INTERFACESv4=\"' + Interface + '\"\n'
+data1 = 'INTERFACESv4=\"' + Interface + '\"'
 isc_dhcp_server = '/home/dirac/SecRouter/isc-dhcp-server'
-#cow(isc_dhcp_server, data1)
+cow(isc_dhcp_server, data1)
 
 # -------------------------- Writing on /etc/dhcpcp.conf-----------------------------
 data2 = 'include \"dhcpd.d/' + Interface + '.conf\"'
 dhcpcd = '/home/dirac/SecRouter/dhcpcd.conf'
-#cow(dhcpcd, data2)
+cow(dhcpcd, data2)
 
-#------------------ Writing on /etc/network/interface -----------------------------
-data3 = 'iface ' + Interface + ' inet ' + 'static\n' + 'address ' + Gateway + '\n' + 'netmask' + Broadcast
-network_interface = '/home/dirac/SecRouter/isc-dhcp-server'
-#cow(network_interface, data3)
+#------------------ Writing on /etc/network/interfaces.d/[Interface] -----------------------------
+data7 = 'auto ' + Interface
+data3 = 'iface ' + Interface + ' inet ' + 'static'
+data4 = 'address ' + Gateway
+data5 = 'netmask' + Broadcast
+data6 = [data7, data3, data4, data5]
+network_interface = '/home/dirac/SecRouter/interfaces.d/'
+dhcpd = open(network_interface + Interface,'w+')
+dhcpd.writelines('\n'.join(data6))
+dhcpd.close()
 
 # ------------- Writing on /etc/dhcpcp.conf/dhcpcd.d/Ínterface.conf ----------
 dhcp_dir = os.listdir('/home/dirac/SecRouter/etc/')
