@@ -1,99 +1,110 @@
 #!/usr/bin/python
-import paramiko
 import sys
 import os
 import ipaddress
 import socket
 import fileinput
 
-# Variables to receive from GUI
-Enable = True
-Apply   = True
-Interface = 'eth0'
-Network = '192.168.1.0'+ '/' + '24'
-Gateway = '192.168.1.1'
-Pool_Range = ['192.168.1.2','192.168.1.254']
-DNS_Server = ['8.8.8.8',',9.9.9.9']
-NTP_Server = '192.168.1.1'
-Lease_Time = ['12','00','00']
-Add_ARP = True
+# Default variables (testing)
+interface_default = 'eth0'
+network_default = '192.168.1.0'+ '/' + '24'
+gateway_default = '192.168.1.1'
+Pool_Range_default = ['192.168.1.2','192.168.1.254']
+DNS_Server_default = ['8.8.8.8',',9.9.9.9']
+NTP_Server_default = '192.168.1.1'
+lease_time_default = ['12','00','00']
 
-# Transitive Variables
-Servers = ''
-
-# -------------------------- Check or Write  -----------------------------
+# -------------------------- check or write  -----------------------------
 # function to check if the file contain the value, if it isn't there the function will write it  
 def cow(file_dir,data):
      with open(file_dir,'r+') as input_file:
          lines = [line.strip().replace('\n','') for line in input_file.readlines()]
          if data not in lines:
-            print("Data not found")
+            print("data not found")
             input_file.write(data)
 
-# -------------------------- IP calculations -----------------------------
-Netmask = str(ipaddress.ip_network(Network).netmask) # makes the Netmask calculation using the variable Network
+# -------------------------- ip calculations -----------------------------
+#netmask = str(ipaddress.ip_network(network).netmask) # makes the netmask calculation using the variable network
 
-Broadcast = str(ipaddress.ip_network(Network).broadcast_address)
+#broadcast = str(ipaddress.ip_network(network).broadcast_address)
 
-Pool_Network_Size = len(list(ipaddress.ip_network(Network).hosts()))-1 # makes the calculation using the variable Network
+#pool_network_size = len(list(ipaddress.ip_network(network).hosts()))-1 # makes the calculation using the variable network
 
-Pool_Range_Size = (int(ipaddress.IPv4Address(Pool_Range[1])) - int(ipaddress.IPv4Address(Pool_Range[0])))+1 # makes the calculation using Pool_Range
+#pool_range_size = (int(ipaddress.ipv4address(pool_range[1])) - int(ipaddress.ipv4address(pool_range[0])))+1 # makes the calculation using pool_range
 
-Private= ipaddress.ip_network(Network).is_private #check if the network is private
+#private= ipaddress.ip_network(network).is_private #check if the network is private
 
-Range_Valid = False if Pool_Range_Size - Pool_Network_Size > 0 else True #Check if the range length is valid
+#range_valid = false if pool_range_size - pool_network_size > 0 else true #check if the range length is valid
 
-Lease_Time_secs = int(Lease_Time[0])*3600+int(Lease_Time[1])*60+int(Lease_Time[2])
+#lease_time_secs = int(lease_time[0])*3600+int(lease_time[1])*60+int(lease_time[2])
 
-#------------------ Writing on /etc/default/isc-dhcp-server -----------------------------
-data1 = 'INTERFACESv4=\"' + Interface + '\"'
-isc_dhcp_server = '/home/dirac/SecRouter/isc-dhcp-server'
-cow(isc_dhcp_server, data1)
+# ------------------------------------------------------------------------
+# ---------------------------------- main --------------------------------
+# ------------------------------------------------------------------------
+def main(interface=interface_default,network=network_default,gateway=gateway_default,Pool_Range=Pool_Range_default,DNS_Server=DNS_Server_default,NTP_Server=NTP_Server_default,lease_time=lease_time_default,Add_ARP=True):
 
-# -------------------------- Writing on /etc/dhcpcp.conf-----------------------------
-data2 = 'include \"dhcpd.d/' + Interface + '.conf\"'
-dhcpcd = '/home/dirac/SecRouter/dhcpcd.conf'
-cow(dhcpcd, data2)
+    # transitive variable
+    servers = ''
 
-#------------------ Writing on /etc/network/interfaces.d/[Interface] -----------------------------
-data7 = 'auto ' + Interface
-data3 = 'iface ' + Interface + ' inet ' + 'static'
-data4 = 'address ' + Gateway
-data5 = 'netmask' + Broadcast
-data6 = [data7, data3, data4, data5]
-network_interface = '/home/dirac/SecRouter/interfaces.d/'
-dhcpd = open(network_interface + Interface,'w+')
-dhcpd.writelines('\n'.join(data6))
-dhcpd.close()
+    # -------------------------- ip calculations -----------------------------
+    netmask = str(ipaddress.ip_network(network).netmask) # makes the netmask calculation using the variable network
 
-# ------------- Writing on /etc/dhcpcp.conf/dhcpcd.d/Ínterface.conf ----------
-dhcp_dir = os.listdir('/home/dirac/SecRouter/etc/')
-for files in dhcp_dir:
-    if files == Interface + '.conf': # Check if the file exist in the directory and erase it
-        print('The file exists')
-        os.remove('/home/dirac/SecRouter/etc/'+ Interface + '.conf')
-    if files == Interface + '.conf.disabled': # Check if the file exist in the directory and erase it
-        print('The file exists')
-        os.remove('/home/dirac/SecRouter/etc/'+ Interface + '.conf.disabled')
+    broadcast = str(ipaddress.ip_network(network).broadcast_address)
 
-dhcpd = open('/home/dirac/SecRouter/etc/'+ Interface + '.conf','a')
-# writing the data into the configuration file
-dhcpd.writelines('#eth0 dhcp server configuration \n')
-l1 = 'subnet ' + Network + ' ' + Netmask + ' ' + '{'
-l2 = 'interface ' + Interface + ';'
-if Add_ARP == True:
-    l3 = 'authoritative;'
-else:
-    l3 = '#authoritative;'
-l4 = 'range ' + Pool_Range[0] + ' ' + Pool_Range[1] + ';'
-l5 = 'option routers ' +  Gateway + ';'
-l6 = 'option subnet-mask ' + Netmask + ';'
-l7 = 'option broadcast-address ' +  Broadcast + ';'
-l8 = 'option domain-name-servers ' + DNS_Server[0] + ' ' + DNS_Server[1] + ';'
-l9 = 'option ntp-server ' + NTP_Server + ';'
-l10 = 'max-lease-time ' + str(Lease_Time_secs) + ';'
-data = [l1, l2, l3, l4, l5, l6, l7, l8, l9, l10,'}','']
+    lease_time_secs = int(lease_time[0])*3600+int(lease_time[1])*60+int(lease_time[2])
 
-dhcpd.writelines('\n'.join(data))
-dhcpd.writelines('#end of eth0 dhcp server configuration')
-dhcpd.close()
+    #------------------ writing on /etc/default/isc-dhcp-server -----------------------------
+    data1 = 'interfacesv4=\"' + interface + '\"'
+    isc_dhcp_server = '/home/dirac/SecRouter/isc-dhcp-server'
+    cow(isc_dhcp_server, data1)
+
+    # -------------------------- writing on /etc/dhcpcp.conf-----------------------------
+    data2 = 'include \"dhcpd.d/' + interface + '.conf\"'
+    dhcpcd = '/home/dirac/SecRouter/dhcpcd.conf'
+    cow(dhcpcd, data2)
+
+    #------------------ writing on /etc/network/interfaces.d/[interface] -----------------------------
+    # There's a tricky thing in this code for the future you'll need to review it
+    data3 = 'auto ' + interface
+    data4 = 'iface ' + interface + ' inet ' + 'static'
+    data5 = 'address ' + gateway
+    data6 = 'netmask' + broadcast
+    data7 = [data3, data4, data5, data6]
+    network_interface = '/home/dirac/SecRouter/interfaces.d/'
+    dhcpd = open(network_interface + interface,'w+')
+    dhcpd.writelines('\n'.join(data7))
+    dhcpd.close()
+
+    # ------------- writing on /etc/dhcpcp.conf/dhcpcd.d/ínterface.conf ----------
+    dhcp_dir = os.listdir('/home/dirac/SecRouter/etc/')
+    for files in dhcp_dir:
+        if files == interface + '.conf': # check if the file exist in the directory and erase it
+            print('the file exists')
+            os.remove('/home/dirac/SecRouter/etc/'+ interface + '.conf')
+        if files == interface + '.conf.disabled': # check if the file exist in the directory and erase it
+            print('the file exists')
+            os.remove('/home/dirac/SecRouter/etc/'+ interface + '.conf.disabled')
+
+    dhcpd = open('/home/dirac/SecRouter/etc/'+ interface + '.conf','a')
+    # writing the data into the configuration file
+    dhcpd.writelines('#eth0 dhcp server configuration \n')
+    l1 = 'subnet ' + network + ' ' + netmask + ' ' + '{'
+    l2 = 'interface ' + interface + ';'
+    if Add_ARP:
+        l3 = 'authoritative;'
+    else:
+        l3 = '#authoritative;'
+    l4 = 'range ' + Pool_Range[0] + ' ' + Pool_Range[1] + ';'
+    l5 = 'option routers ' +  gateway + ';'
+    l6 = 'option subnet-mask ' + netmask + ';'
+    l7 = 'option broadcast-address ' +  broadcast + ';'
+    l8 = 'option domain-name-servers ' + DNS_Server[0] + ' ' + DNS_Server[1] + ';'
+    l9 = 'option ntp-server ' + NTP_Server + ';'
+    l10 = 'max-lease-time ' + str(lease_time_secs) + ';'
+    data = [l1, l2, l3, l4, l5, l6, l7, l8, l9, l10,'}','']
+
+    dhcpd.writelines('\n'.join(data))
+    dhcpd.writelines('#end of eth0 dhcp server configuration')
+    dhcpd.close()
+
+main()
