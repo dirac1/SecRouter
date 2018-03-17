@@ -31,14 +31,12 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
             # comment isc-dhcp-server 
             comment(interface,'/home/dirac/SecRouter/isc-dhcp-server','INTERFACESv4=\"'+interface+'\"',False)
             # comment interfaces.d/[interface] 
-            data = 'auto ' + interface
-            data2 = 'iface ' + interface + ' inet' + ' static'
-            data3 =  'address ' + gateway
-            data4 = 'netmask ' + broadcast
-            comment(interface,'/home/dirac/SecRouter/interfaces.d/'+interface,data,False)
-            comment(interface,'/home/dirac/SecRouter/interfaces.d/'+interface,data2,False)
-            comment(interface,'/home/dirac/SecRouter/interfaces.d/'+interface,data3,False)
-            comment(interface,'/home/dirac/SecRouter/interfaces.d/'+interface,data4,False)
+            data = [ 'auto ' + interface \
+                     ,'iface ' + interface + ' inet' + ' static' \
+                     , 'address ' + gateway \
+                     , 'netmask ' + broadcast ]
+            for value in data:
+                comment(interface,'/home/dirac/SecRouter/interfaces.d/'+interface,value,False)
         else:
             print('The configuration file doesn\'t exist')
 
