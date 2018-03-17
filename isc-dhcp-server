@@ -16,5 +16,5 @@ DHCPDv4_CONF=/etc/dhcpcd.conf
 #	Separate multiple interfaces with spaces, e.g. "eth0 eth1".
 INTERFACESv4="eth1"
 #INTERFACESv6=""
-INTERFACESv4="eth0"
+###INTERFACESv4="eth0"
 interfacesv4="eth0"

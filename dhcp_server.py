@@ -68,7 +68,7 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     data3 = 'auto ' + interface
     data4 = 'iface ' + interface + ' inet ' + 'static'
     data5 = 'address ' + gateway
-    data6 = 'netmask' + broadcast
+    data6 = 'netmask ' + broadcast
     data7 = [data3, data4, data5, data6]
     network_interface = '/home/dirac/SecRouter/interfaces.d/'
     dhcpd = open(network_interface + interface,'w+')

@@ -1,3 +1,11 @@
-# 2018-03-15
+# 2018-03-16
+
+# -------------------------------------------------------------------
+ 
 o Add the other files being used in the dhcp server to the enable and disable script
-o Test,Test,Test
+    > you must comment the interface on isc-dhcp-server **DONE**
+    > you must comment the interface configuration on interface.d/[interface] **DONE**
+
+o Start building the Static leases script
+
+# -------------------------------------------------------------------
