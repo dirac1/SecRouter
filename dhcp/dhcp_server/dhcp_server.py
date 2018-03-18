@@ -55,12 +55,12 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
 
     #------------------ writing on /etc/default/isc-dhcp-server -----------------------------
     data1 = 'interfacesv4=\"' + interface + '\"'
-    isc_dhcp_server = '/home/dirac/SecRouter/isc-dhcp-server'
+    isc_dhcp_server = '/etc/default/isc-dhcp-server'
     cow(isc_dhcp_server, data1)
 
     # -------------------------- writing on /etc/dhcpcp.conf-----------------------------
     data2 = 'include \"dhcpd.d/' + interface + '.conf\"'
-    dhcpcd = '/home/dirac/SecRouter/dhcpcd.conf'
+    dhcpcd = '/etc/dhcpcd.conf'
     cow(dhcpcd, data2)
 
     #------------------ writing on /etc/network/interfaces.d/[interface] -----------------------------
@@ -70,22 +70,22 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     data5 = 'address ' + gateway
     data6 = 'netmask ' + broadcast
     data7 = [data3, data4, data5, data6]
-    network_interface = '/home/dirac/SecRouter/interfaces.d/'
+    network_interface = '/etc/network/interfaces/interfaces.d/'
     dhcpd = open(network_interface + interface,'w+')
     dhcpd.writelines('\n'.join(data7))
     dhcpd.close()
 
     # ------------- writing on /etc/dhcpcp.conf/dhcpcd.d/ínterface.conf ----------
-    dhcp_dir = os.listdir('/home/dirac/SecRouter/etc/')
+    dhcp_dir = os.listdir('/etc/dhcpcd.d/')
     for files in dhcp_dir:
         if files == interface + '.conf': # check if the file exist in the directory and erase it
             print('the file exists')
-            os.remove('/home/dirac/SecRouter/etc/'+ interface + '.conf')
+            os.remove('/etc/dhcpcd.d/'+ interface + '.conf')
         if files == interface + '.conf.disabled': # check if the file exist in the directory and erase it
             print('the file exists')
-            os.remove('/home/dirac/SecRouter/etc/'+ interface + '.conf.disabled')
+            os.remove('/etc/dhcpcd.d/'+ interface + '.conf.disabled')
 
-    dhcpd = open('/home/dirac/SecRouter/etc/'+ interface + '.conf','a')
+    dhcpd = open('/etc/dhcpcd.d/'+ interface + '.conf','a')
     # writing the data into the configuration file
     dhcpd.writelines('#eth0 dhcp server configuration \n')
     l1 = 'subnet ' + network + ' ' + netmask + ' ' + '{'
@@ -106,5 +106,8 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     dhcpd.writelines('\n'.join(data))
     dhcpd.writelines('#end of eth0 dhcp server configuration')
     dhcpd.close()
-subprocess.call('sudo systemctl restart isc-dhcp-server')
+
+# Restart the dhcp server (Not sure if i should enable it in this way)    
+    subprocess.call('sudo systemctl restart isc-dhcp-server')
+
 main()

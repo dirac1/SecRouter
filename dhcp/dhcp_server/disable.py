@@ -23,17 +23,17 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
 
     # -------------------------- --------------- -----------------------------
 
-    dhcp_dir = os.listdir('/home/dirac/SecRouter/etc/')
+    dhcp_dir = os.listdir('/etc/dhcpcd.d')
     for file in dhcp_dir:
         if file == interface + '.conf':
-            os.rename('/home/dirac/SecRouter/etc/' + interface + '.conf', '/home/dirac/SecRouter/etc/' + interface + '.conf.disabled')
+            os.rename('/etc/dhcpcd.d/' + interface + '.conf', '/etc/dhcpcd.d/' + interface + '.conf.disabled')
 
             # comment dhcpcd to disable
             commentary = ('include \"dhcpd.d/'+ interface + '.conf\"')
-            comment(interface,'/home/dirac/SecRouter/dhcpcd.conf',commentary)
+            comment(interface,'/etc/dhcpcd.conf',commentary)
 
             # comment isc-dhcp-server 
-            comment(interface,'/home/dirac/SecRouter/isc-dhcp-server','INTERFACESv4=\"'+interface+'\"')
+            comment(interface,'/etc/default/isc-dhcp-server','INTERFACESv4=\"'+interface+'\"')
 
             # comment interfaces.d/[interface] 
             data = [ 'auto ' + interface \
@@ -41,10 +41,10 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
                      , 'address ' + gateway \
                      , 'netmask ' + broadcast ]
             for value in data:
-                comment(interface,'/home/dirac/SecRouter/interfaces.d/'+interface,value)
+                comment(interface,'/etc/network/interfaces.d/'+interface,value)
         else:
             print('The configuration file doesn\'t exist')
 
 # Restart the server to do the changes
-subprocess.call('/etc/init.d/isc-dhcp-server restart')
+    subprocess.call('/etc/init.d/isc-dhcp-server restart')
 main()

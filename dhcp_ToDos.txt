@@ -8,4 +8,13 @@ o Add the other files being used in the dhcp server to the enable and disable sc
 
 o Start building the Static leases script
 
+o Start building the dhcp client script (you'll need extra scripts to do the renew/release buttons)
+
+o Create a new user inside de router  **DONE**
+
+o Give this user super user access to the network characteristics **DONE** 
+	 > created a new group called network
+	 > allowed the user to run commands without password
+ 
+o Change systemd service to enable one interface at a time 
 # -------------------------------------------------------------------
