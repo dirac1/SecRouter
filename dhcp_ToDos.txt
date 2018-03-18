@@ -1,20 +1,24 @@
-# 2018-03-16
+# 2018-03-18
 
 # -------------------------------------------------------------------
- 
+# DHCP SERVER 
 o Add the other files being used in the dhcp server to the enable and disable script
     > you must comment the interface on isc-dhcp-server **DONE**
     > you must comment the interface configuration on interface.d/[interface] **DONE**
 
-o Start building the Static leases script
-
-o Start building the dhcp client script (you'll need extra scripts to do the renew/release buttons)
+o Start building the Static leases script **DONE**
 
 o Create a new user inside de router  **DONE**
 
-o Give this user super user access to the network characteristics **DONE** 
+o Give new user, super user access to the network characteristics **DONE** 
 	 > created a new group called network
 	 > allowed the user to run commands without password
  
-o Change systemd service to enable one interface at a time 
+o Enable one interface at a time 
+    > Found a way to do it without involving modifying system services
+
+# -------------------------------------------------------------------
+# DHCP CLIENT
+
+o Start building the dhcp client script (you'll need extra scripts to do the renew/release buttons)
 # -------------------------------------------------------------------

@@ -1,10 +1,12 @@
 #!/usr/bin/python
+# APPLY BUTTOn for the DHCP tab in the category DHCP SERVER
 import sys
 import os
 import ipaddress
 import socket
 import fileinput
 import subprocess
+
 # Default variables (testing)
 interface_default = 'eth0'
 network_default = '192.168.1.0'+ '/' + '24'
@@ -12,7 +14,7 @@ gateway_default = '192.168.1.1'
 Pool_Range_default = ['192.168.1.2','192.168.1.254']
 DNS_Server_default = ['8.8.8.8',',9.9.9.9']
 NTP_Server_default = '192.168.1.1'
-lease_time_default = ['12','00','00']
+lease_time_default = '120000'
 
 # -------------------------- check or write  -----------------------------
 # function to check if the file contain the value, if it isn't there the function will write it  
@@ -51,8 +53,6 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
 
     broadcast = str(ipaddress.ip_network(network).broadcast_address)
 
-    lease_time_secs = int(lease_time[0])*3600+int(lease_time[1])*60+int(lease_time[2])
-
     #------------------ writing on /etc/default/isc-dhcp-server -----------------------------
     data1 = 'interfacesv4=\"' + interface + '\"'
     isc_dhcp_server = '/etc/default/isc-dhcp-server'
@@ -85,6 +85,11 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
             print('the file exists')
             os.remove('/etc/dhcpcd.d/'+ interface + '.conf.disabled')
 
+    static_lease_dir = os.listdir('/etc/dhcpcd.d/')
+    for files in static_lease_dir:
+        if files == 'static.leases.'+ interface:
+            os.remove('/etc/dhcpcd.d/static.leases.'+ interface)
+
     dhcpd = open('/etc/dhcpcd.d/'+ interface + '.conf','a')
     # writing the data into the configuration file
     dhcpd.writelines('#eth0 dhcp server configuration \n')
@@ -100,7 +105,7 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     l7 = 'option broadcast-address ' +  broadcast + ';'
     l8 = 'option domain-name-servers ' + DNS_Server[0] + ' ' + DNS_Server[1] + ';'
     l9 = 'option ntp-server ' + NTP_Server + ';'
-    l10 = 'max-lease-time ' + str(lease_time_secs) + ';'
+    l10 = 'max-lease-time ' + str(lease_time) + ';'
     data = [l1, l2, l3, l4, l5, l6, l7, l8, l9, l10,'}','']
 
     dhcpd.writelines('\n'.join(data))

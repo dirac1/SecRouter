@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# DISABLE Button for the DHCP Tab in the category DHCP SERVER
 import os
 import fileinput
 import ipaddress

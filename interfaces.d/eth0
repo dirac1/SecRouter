@@ -1,4 +1,4 @@
-#auto eth0
-#iface eth0 inet static
-#address 192.168.1.1
-#netmask 192.168.1.255
+auto eth0
+iface eth0 inet static
+address 192.168.1.1
+netmask 192.168.1.255

@@ -23,21 +23,6 @@ def cow(file_dir,data):
             print("data not found")
             input_file.write(data)
 
-# -------------------------- ip calculations -----------------------------
-#netmask = str(ipaddress.ip_network(network).netmask) # makes the netmask calculation using the variable network
-
-#broadcast = str(ipaddress.ip_network(network).broadcast_address)
-
-#pool_network_size = len(list(ipaddress.ip_network(network).hosts()))-1 # makes the calculation using the variable network
-
-#pool_range_size = (int(ipaddress.ipv4address(pool_range[1])) - int(ipaddress.ipv4address(pool_range[0])))+1 # makes the calculation using pool_range
-
-#private= ipaddress.ip_network(network).is_private #check if the network is private
-
-#range_valid = false if pool_range_size - pool_network_size > 0 else true #check if the range length is valid
-
-#lease_time_secs = int(lease_time[0])*3600+int(lease_time[1])*60+int(lease_time[2])
-
 # ------------------------------------------------------------------------
 # ---------------------------------- main --------------------------------
 # ------------------------------------------------------------------------
@@ -85,6 +70,11 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
             print('the file exists')
             os.remove('/home/dirac/SecRouter/etc/'+ interface + '.conf.disabled')
 
+    static_lease_dir = os.listdir('/home/dirac/SecRouter/etc/')
+    for files in static_lease_dir:
+        if files == 'static.leases.'+ interface:
+            os.remove('/home/dirac/SecRouter/etc/static.leases.'+ interface)
+
     dhcpd = open('/home/dirac/SecRouter/etc/'+ interface + '.conf','a')
     # writing the data into the configuration file
     dhcpd.writelines('#eth0 dhcp server configuration \n')
@@ -106,5 +96,5 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     dhcpd.writelines('\n'.join(data))
     dhcpd.writelines('#end of eth0 dhcp server configuration')
     dhcpd.close()
-subprocess.call('sudo systemctl restart isc-dhcp-server')
+    #subprocess.call('sudo systemctl restart isc-dhcp-server')
 main()

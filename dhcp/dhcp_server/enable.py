@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# ENABLE Button for the DHCP Tab in the category DHCP SERVER
 import os
 import fileinput
 import ipaddress
