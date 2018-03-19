@@ -25,6 +25,16 @@ def cow(file_dir,data):
             print("data not found")
             input_file.write(data)
 
+# ----------- execute command and print the stout or stderr  ---------------
+def execute(cmd):
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+    for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line
+    popen.stdout.close()
+    return_code = popen.wait()
+    if return_code:
+        raise subprocess.CalledProcessError(return_code, cmd)
+
 # -------------------------- ip calculations -----------------------------
 #netmask = str(ipaddress.ip_network(network).netmask) # makes the netmask calculation using the variable network
 
@@ -37,9 +47,7 @@ def cow(file_dir,data):
 #private= ipaddress.ip_network(network).is_private #check if the network is private
 
 #range_valid = false if pool_range_size - pool_network_size > 0 else true #check if the range length is valid
-
-#lease_time_secs = int(lease_time[0])*3600+int(lease_time[1])*60+int(lease_time[2])
-
+#lease_time_secs = int(lease_time[0])*3600+int(lease_time[1])*60+int(lease_time[2]) 
 # ------------------------------------------------------------------------
 # ---------------------------------- main --------------------------------
 # ------------------------------------------------------------------------
@@ -112,7 +120,8 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     dhcpd.writelines('#end of eth0 dhcp server configuration')
     dhcpd.close()
 
-# Restart the dhcp server (Not sure if i should enable it in this way)    
-    subprocess.call('sudo systemctl restart isc-dhcp-server')
+    # Restart the dhcp server to apply the changes     
+    for path in execute(["sudo systemctl restart isc-dhcp-server"]):
+        print(path,end="")
 
 main()

@@ -23,6 +23,17 @@ def cow(file_dir,data):
             print("data not found")
             input_file.write(data)
 
+# ----------- execute command and print the stout or stderr  ---------------
+def execute(cmd):
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+    for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line
+    popen.stdout.close()
+    return_code = popen.wait()
+    if return_code:
+        raise subprocess.CalledProcessError(return_code, cmd)
+
+
 # ------------------------------------------------------------------------
 # ---------------------------------- main --------------------------------
 # ------------------------------------------------------------------------
@@ -96,5 +107,9 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     dhcpd.writelines('\n'.join(data))
     dhcpd.writelines('#end of eth0 dhcp server configuration')
     dhcpd.close()
-    #subprocess.call('sudo systemctl restart isc-dhcp-server')
+
+    # Restart the dhcp server to apply the changes     
+    for path in execute(["sudo systemctl restart isc-dhcp-server"]):
+        print(path,end="")
+
 main()

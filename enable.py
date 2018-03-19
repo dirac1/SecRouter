@@ -2,6 +2,7 @@ import os
 import fileinput
 import ipaddress
 import subprocess
+
 interface_default='eth0'
 network_default = '192.168.1.0'+ '/' + '24'
 gateway_default = '192.168.1.1'
@@ -14,6 +15,15 @@ def comment(interface,input_file,text,do=True,comment_glyph='#'):
                 print(line.replace(text,comment_glyph + text), end='')
             else:
                 print(line.replace(comment_glyph + text,text), end='')
+# ----------- execute command and print the stout or stderr  ---------------
+def execute(cmd):
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+    for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line
+    popen.stdout.close()
+    return_code = popen.wait()
+    if return_code:
+        raise subprocess.CalledProcessError(return_code, cmd)
 
 # -------------------------- main -----------------------------
 def main(interface=interface_default,network=network_default,gateway=gateway_default):
@@ -43,6 +53,8 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
         else:
             print('The configuration file doesn\'t exist')
 
-subprocess.call('/etc/init.d/isc-dhcp-server restart')
+    # Restart the dhcp server to apply the changes     
+    for path in execute(["sudo systemctl restart isc-dhcp-server"]):
+        print(path,end="")
 
 main()

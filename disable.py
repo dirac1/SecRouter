@@ -15,6 +15,16 @@ def comment(interface,input_file,text,do=True,comment_glyph='#'):
             else:
                 print(line.replace(comment_glyph + text,text), end='')
 
+# ----------- execute command and print the stout or stderr  ---------------
+def execute(cmd):
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+    for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line
+    popen.stdout.close()
+    return_code = popen.wait()
+    if return_code:
+        raise subprocess.CalledProcessError(return_code, cmd)
+
 def main(interface=interface_default,network=network_default,gateway=gateway_default):
     # -------------------------- ip calculations -----------------------------
     netmask = str(ipaddress.ip_network(network).netmask) # makes the netmask calculation using the variable network
@@ -45,6 +55,7 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
         else:
             print('The configuration file doesn\'t exist')
 
-# Restart the server to do the changes
-subprocess.call('/etc/init.d/isc-dhcp-server restart')
+    # Restart the dhcp server to apply the changes     
+    for path in execute(["sudo systemctl restart isc-dhcp-server"]):
+        print(path,end="")
 main()
