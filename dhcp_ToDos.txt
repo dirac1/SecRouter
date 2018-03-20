@@ -2,6 +2,7 @@
 
 # -------------------------------------------------------------------
 # DHCP SERVER 
+
 o Add the other files being used in the dhcp server to the enable and disable script
     > you must comment the interface on isc-dhcp-server **DONE**
     > you must comment the interface configuration on interface.d/[interface] **DONE**
@@ -20,5 +21,7 @@ o Enable one interface at a time
 # -------------------------------------------------------------------
 # DHCP CLIENT
 
-o Start building the dhcp client script (you'll need extra scripts to do the renew/release buttons)
+o Start building the dhcp client script (you'll need extra scripts to do the renew/release buttons) **DONE**
+    > Created a separated script for release/renew
+
 # -------------------------------------------------------------------
