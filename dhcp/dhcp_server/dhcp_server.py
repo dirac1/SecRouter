@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# coding=utf-8
 # APPLY BUTTOn for the DHCP tab in the category DHCP SERVER
 import sys
 import os
@@ -8,13 +9,13 @@ import fileinput
 import subprocess
 
 # Default variables (testing)
-interface_default = 'eth0'
-network_default = '192.168.1.0'+ '/' + '24'
-gateway_default = '192.168.1.1'
-Pool_Range_default = ['192.168.1.2','192.168.1.254']
-DNS_Server_default = ['8.8.8.8',',9.9.9.9']
-NTP_Server_default = '192.168.1.1'
-lease_time_default = '120000'
+#interface_default = 'eth0'
+#network_default = '192.168.1.0'+ '/' + '24'
+#gateway_default = '192.168.1.1'
+#Pool_Range_default = ['192.168.1.2','192.168.1.254']
+#DNS_Server_default = ['8.8.8.8',',9.9.9.9']
+#NTP_Server_default = '192.168.1.1'
+#lease_time_default = '120000'
 
 # -------------------------- check or write  -----------------------------
 # function to check if the file contain the value, if it isn't there the function will write it  
@@ -35,26 +36,17 @@ def execute(cmd):
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
 
-# -------------------------- ip calculations -----------------------------
-#netmask = str(ipaddress.ip_network(network).netmask) # makes the netmask calculation using the variable network
-
-#broadcast = str(ipaddress.ip_network(network).broadcast_address)
-
-#pool_network_size = len(list(ipaddress.ip_network(network).hosts()))-1 # makes the calculation using the variable network
-
-#pool_range_size = (int(ipaddress.ipv4address(pool_range[1])) - int(ipaddress.ipv4address(pool_range[0])))+1 # makes the calculation using pool_range
-
-#private= ipaddress.ip_network(network).is_private #check if the network is private
-
-#range_valid = false if pool_range_size - pool_network_size > 0 else true #check if the range length is valid
-#lease_time_secs = int(lease_time[0])*3600+int(lease_time[1])*60+int(lease_time[2]) 
-# ------------------------------------------------------------------------
 # ---------------------------------- main --------------------------------
-# ------------------------------------------------------------------------
-def main(interface=interface_default,network=network_default,gateway=gateway_default,Pool_Range=Pool_Range_default,DNS_Server=DNS_Server_default,NTP_Server=NTP_Server_default,lease_time=lease_time_default,Add_ARP=True):
+def main(interface,network,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_Server_1,DNS_Server_2,NTP_Server,lease_time,Add_ARP):
 
     # transitive variable
     servers = ''
+    Pool_Range=[]
+    Pool_Range.append(Pool_Range_Start)
+    Pool_Range.append(Pool_Range_Stop)
+    DNS_Server = []
+    DNS_Server.append(DNS_Server_1)
+    DNS_Server.append(DNS_Server_2)
 
     # -------------------------- ip calculations -----------------------------
     netmask = str(ipaddress.ip_network(network).netmask) # makes the netmask calculation using the variable network
@@ -71,14 +63,14 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     dhcpcd = '/etc/dhcpcd.conf'
     cow(dhcpcd, data2)
 
-    #------------------ writing on /etc/network/interfaces.d/[interface] -----------------------------
+    #------------------ writing on /etc/network/interfaces.d/[interface] -----------------------
     # There's a tricky thing in this code for the future you'll need to review it
     data3 = 'auto ' + interface
     data4 = 'iface ' + interface + ' inet ' + 'static'
     data5 = 'address ' + gateway
     data6 = 'netmask ' + broadcast
     data7 = [data3, data4, data5, data6]
-    network_interface = '/etc/network/interfaces/interfaces.d/'
+    network_interface = '/etc/network/interfaces.d/'
     dhcpd = open(network_interface + interface,'w+')
     dhcpd.writelines('\n'.join(data7))
     dhcpd.close()
@@ -121,7 +113,7 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     dhcpd.close()
 
     # Restart the dhcp server to apply the changes     
-    for path in execute(["sudo systemctl restart isc-dhcp-server"]):
-        print(path,end="")
+#    for path in execute(["sudo systemctl restart isc-dhcp-server"]):
+#        print(path,end="")
 
 main()
