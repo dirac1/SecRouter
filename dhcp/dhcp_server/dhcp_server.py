@@ -17,13 +17,12 @@ Pool_Range_Start = sys.argv[5]
 Pool_Range_Stop = sys.argv[6]
 DNS_Server_1 = sys.argv[7]
 DNS_Server_2 = sys.argv[8]
-NTP_Server= sys.argv[9]
-lease_time= sys.argv[10]
-Add_ARP = sys.argv[11]
+lease_time= sys.argv[9]
+Add_ARP = sys.argv[10]
 
 # -------------------------- check or write  -----------------------------
 # function to check if the file contain the value, if it isn't there the function will write it  
-def cow(file_dir,data,remove=False):
+def cow(file_dir,data):
      with open(file_dir,'r+') as input_file:
          lines = [line.strip().replace('\n','') for line in input_file.readlines()]
          if data not in lines:
@@ -117,4 +116,4 @@ def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_S
     for path in execute(["systemctl","restart","isc-dhcp-server"]):
         print(path , end = '')
 
-main(interface, network, prefix, gateway, Pool_Range_Start, Pool_Range_Stop, DNS_Server_1, DNS_Server_2, NTP_Server, lease_time, Add_ARP)
+main(interface, network, prefix, gateway, Pool_Range_Start, Pool_Range_Stop, DNS_Server_1, DNS_Server_2, lease_time, Add_ARP)
