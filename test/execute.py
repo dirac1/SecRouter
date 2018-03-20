@@ -10,5 +10,5 @@ def execute(cmd):
         raise subprocess.CalledProcessError(return_code, cmd)
 
 # Example
-for path in execute(["ls", "a"]):
+for path in execute(['systemctl','daemon-reload']):
     print(path, end="")

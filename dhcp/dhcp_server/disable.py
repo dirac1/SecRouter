@@ -1,13 +1,17 @@
 #!/usr/bin/python
+
 # DISABLE Button for the DHCP Tab in the category DHCP SERVER
 import os
 import fileinput
 import ipaddress
 import subprocess
-interface_default='eth0'
-network_default = '192.168.1.0'+ '/' + '24'
-gateway_default = '192.168.1.1'
 
+# variables
+interface = sys.argv[1]
+network = sys.argv[2]
+gateway= sys.argv[3]
+
+# -------------------------- comment function -----------------------------
 def comment(interface,input_file,text,do=True,comment_glyph='#'):
     with fileinput.FileInput(input_file, inplace=True) as file:
         for line in file:
@@ -26,14 +30,14 @@ def execute(cmd):
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
 
-def main(interface=interface_default,network=network_default,gateway=gateway_default):
+def main(interface,network,gateway):
+
     # -------------------------- ip calculations -----------------------------
-    netmask = str(ipaddress.ip_network(network).netmask) # makes the netmask calculation using the variable network
+    netmask = str(ipaddress.ip_network(network).netmask)
 
     broadcast = str(ipaddress.ip_network(network).broadcast_address)
 
     # -------------------------- --------------- -----------------------------
-
     dhcp_dir = os.listdir('/etc/dhcpcd.d')
     for file in dhcp_dir:
         if file == interface + '.conf':
@@ -57,6 +61,7 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
             print('The configuration file doesn\'t exist')
 
     # Restart the server to apply the changes
-    for path in execute(['/etc/init.d/isc-dhcp-server','restart']):
-        print(path, end="")
-main()
+        for path in execute(['/etc/init.d/isc-dhcp-server','restart']):
+            print(path, end='')
+
+main(interface,network,gateway)
