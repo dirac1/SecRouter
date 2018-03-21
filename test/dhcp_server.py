@@ -50,7 +50,7 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     lease_time_secs = int(lease_time[0])*3600+int(lease_time[1])*60+int(lease_time[2])
 
     #------------------ writing on /etc/default/isc-dhcp-server -----------------------------
-    data1 = 'interfacesv4=\"' + interface + '\"'
+    data1 = 'INTERFACESv4=\"' + interface + '\"'
     isc_dhcp_server = '/home/dirac/SecRouter/isc-dhcp-server'
     cow(isc_dhcp_server, data1)
 
@@ -109,7 +109,5 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
     dhcpd.close()
 
     # Restart the dhcp server to apply the changes     
-    for path in execute(["sudo systemctl restart isc-dhcp-server"]):
-        print(path,end="")
 
 main()

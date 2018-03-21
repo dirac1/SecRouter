@@ -45,18 +45,18 @@ def main(interface,network,gateway):
         if file == interface + '.conf.disabled':
             os.rename('/etc/dhcpcd.d/' + interface + '.conf.disabled', '/etc/dhcpcd.d/' + interface + '.conf')
 
-
             # comment isc-dhcp-server 
             comment(interface,'/etc/default/isc-dhcp-server','INTERFACESv4=\"'+interface+'\"',False)
 
             # comment dhcpcd to disable
-            comment(interface,'/etc/dhcpcd.conf','include \"dhcpcd.d/'+interface+'.conf\";',False)
+            commentary='include \"/etc/dhcpcd.d/'+interface+'.conf\";'
+            comment(interface,'/etc/dhcpcd.conf',commentary,False)
 
             # comment interfaces.d/[interface] 
             data = [ 'auto ' + interface \
-                     ,'iface ' + interface + ' inet' + ' static' \
-                     , 'address ' + gateway \
-                     , 'netmask ' + broadcast ]
+                     , '    iface ' + interface + ' inet' + ' static' \
+                     , '    address ' + gateway \
+                     , '    netmask ' + netmask ]
             for value in data:
                 comment(interface,'/etc/network/interfaces.d/'+interface,value,False)
         else:

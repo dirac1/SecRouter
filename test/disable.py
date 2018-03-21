@@ -56,6 +56,4 @@ def main(interface=interface_default,network=network_default,gateway=gateway_def
             print('The configuration file doesn\'t exist')
 
     # Restart the dhcp server to apply the changes     
-    for path in execute(["sudo systemctl restart isc-dhcp-server"]):
-        print(path,end="")
 main()

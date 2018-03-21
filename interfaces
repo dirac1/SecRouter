@@ -16,4 +16,4 @@ auto eth1
 	netmask 255.255.255.248
 
 # Include files from /etc/network/interfaces.d:
-source-directory /etc/network/interfaces.d
+source-directory /etc/network/interfaces.d/*

@@ -51,9 +51,9 @@ def main(interface,network,gateway):
 
             # comment interfaces.d/[interface] 
             data = [ 'auto ' + interface \
-                     ,'iface ' + interface + ' inet' + ' static' \
-                     , 'address ' + gateway \
-                     , 'netmask ' + netmask ]
+                     , '    iface ' + interface + ' inet' + ' static' \
+                     , '    address ' + gateway \
+                     , '    netmask ' + netmask ]
             for value in data:
                 comment(interface,'/etc/network/interfaces.d/'+interface,value)
         else:
