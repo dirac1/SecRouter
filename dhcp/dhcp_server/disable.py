@@ -1,11 +1,11 @@
 #!/usr/bin/python
-
+# coding=utf-8
 # DISABLE Button for the DHCP Tab in the category DHCP SERVER
 import os
 import fileinput
 import ipaddress
 import subprocess
-
+import sys
 # variables
 interface = sys.argv[1]
 network = sys.argv[2]
@@ -43,25 +43,24 @@ def main(interface,network,gateway):
         if file == interface + '.conf':
             os.rename('/etc/dhcpcd.d/' + interface + '.conf', '/etc/dhcpcd.d/' + interface + '.conf.disabled')
 
-            # comment dhcpcd to disable
-            commentary = ('include \"dhcpd.d/'+ interface + '.conf\"')
-            comment(interface,'/etc/dhcpcd.conf',commentary)
-
             # comment isc-dhcp-server 
             comment(interface,'/etc/default/isc-dhcp-server','INTERFACESv4=\"'+interface+'\"')
+
+            # comment dhcpcd to disable
+            comment(interface,'/etc/dhcpcd.conf','include \"/etc/dhcpcd.d/'+interface+'.conf'+'\";')
 
             # comment interfaces.d/[interface] 
             data = [ 'auto ' + interface \
                      ,'iface ' + interface + ' inet' + ' static' \
                      , 'address ' + gateway \
-                     , 'netmask ' + broadcast ]
+                     , 'netmask ' + netmask ]
             for value in data:
                 comment(interface,'/etc/network/interfaces.d/'+interface,value)
         else:
             print('The configuration file doesn\'t exist')
 
     # Restart the server to apply the changes
-        for path in execute(['/etc/init.d/isc-dhcp-server','restart']):
-            print(path, end='')
+#        for path in execute(['/etc/init.d/isc-dhcp-server','restart']):
+#            print(path, end='')
 
 main(interface,network,gateway)

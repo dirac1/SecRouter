@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # ENABLE Button for the DHCP Tab in the category DHCP SERVER
-
+# conding=utf-8
 import os
 import fileinput
 import ipaddress
 import subprocess
+import sys
 
 # variables
 interface = sys.argv[1]
@@ -43,11 +44,14 @@ def main(interface,network,gateway):
     for file in dhcp_dir:
         if file == interface + '.conf.disabled':
             os.rename('/etc/dhcpcd.d/' + interface + '.conf.disabled', '/etc/dhcpcd.d/' + interface + '.conf')
-            # comment dhcpcd to disable
-            commentary = ('include \"dhcpd.d/'+ interface + '.conf\"')
-            comment(interface,'/etc/dhcpcd.conf',commentary,False)
+
+
             # comment isc-dhcp-server 
             comment(interface,'/etc/default/isc-dhcp-server','INTERFACESv4=\"'+interface+'\"',False)
+
+            # comment dhcpcd to disable
+            comment(interface,'/etc/dhcpcd.conf','include \"dhcpcd.d/'+interface+'.conf\";',False)
+
             # comment interfaces.d/[interface] 
             data = [ 'auto ' + interface \
                      ,'iface ' + interface + ' inet' + ' static' \
@@ -62,4 +66,4 @@ def main(interface,network,gateway):
     for path in execute(['/etc/init.d/isc-dhcp-server','restart']):
         print(path, end='')
 
-main(interfaces,network,gateway)
+main(interface,network,gateway)

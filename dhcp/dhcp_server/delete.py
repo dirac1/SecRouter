@@ -15,7 +15,7 @@ def cow(file_dir,data):
          lines = [line.strip().replace('\n','') for line in input_file.readlines()]
          if data in lines:
             print("data found")
-            input_file.write('')
+            input_file.write('#DELETED')
 # ------------------------------------------------------------------------
 def main(interface):
 
@@ -25,6 +25,7 @@ def main(interface):
 
     os.remove('/etc/network/interfaces.d/'+interface)
     os.remove('/etc/dhcpcd.d/'+interface+'.conf')
+    os.remove('/etc/dhcpcd.d/'+interface+'.conf.disabled')
 # ------------------------------------------------------------------------
 
 main(interface)

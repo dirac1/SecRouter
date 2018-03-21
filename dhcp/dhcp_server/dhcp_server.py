@@ -27,7 +27,7 @@ def cow(file_dir,data):
          lines = [line.strip().replace('\n','') for line in input_file.readlines()]
          if data not in lines:
             print("data not found")
-            input_file.write(data)
+            input_file.write(data+'\n')
 
 # ----------- execute command and print the stout or stderr  -------------
 def execute(cmd):
@@ -40,7 +40,7 @@ def execute(cmd):
         raise subprocess.CalledProcessError(return_code, cmd)
 
 # ---------------------------------- main --------------------------------
-def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_Server_1,DNS_Server_2,NTP_Server,lease_time,Add_ARP):
+def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_Server_1,DNS_Server_2,lease_time,Add_ARP):
 
     # transitive variable
     Pool_Range=[]
@@ -57,7 +57,7 @@ def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_S
     broadcast = str(ipaddress.ip_network(networkprefix).broadcast_address)
 
     #------------------ writing on /etc/default/isc-dhcp-server -------------------------
-    cow( '/etc/default/isc-dhcp-server' , 'INTERFACESv4=\"' + interface + '\"' )
+    cow('/etc/default/isc-dhcp-server' , 'INTERFACESv4=\"' + interface + '\"' )
 
     # -------------------------- writing on /etc/dhcpcp.conf-----------------------------
     cow( '/etc/dhcpcd.conf' , 'include \"/etc/dhcpcd.d/' + interface + '.conf\"' + ';' )
@@ -95,7 +95,7 @@ def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_S
     dhcpd = open('/etc/dhcpcd.d/'+ interface + '.conf','a')
     conf = [ 'subnet ' + network + ' netmask ' + netmask + ' ' + '{', \
              'interface ' + interface + ';', \
-             '', \
+             'authoritative;', \
              'range ' + Pool_Range[0] + ' ' + Pool_Range[1] + ';', \
              'option routers ' +  gateway + ';', \
              'option subnet-mask ' + netmask + ';', \
@@ -104,10 +104,9 @@ def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_S
              'max-lease-time ' + str(lease_time) + ';', \
              '} ' ]
 
-    if Add_ARP:
-        data.insert(3,'authoritative;')
-    else:
-        data.insert(3,'#authoritative;')
+    if Add_ARP==False:
+        conf.pop(2)
+        conf.insert(2,'#authoritative;')
 
     dhcpd.writelines('\n'.join(conf))
     dhcpd.close()
