@@ -25,3 +25,9 @@ o Start building the dhcp client script (you'll need extra scripts to do the ren
     > Created a separated script for release/renew
 
 # -------------------------------------------------------------------
+# 2018-03-20
+
+Debugging DHCP SERVER
+
+o Fix disable.py/enable.py to comment and uncomment the statement 'include /etc/dhcpcd.d/[interface]';
+
