@@ -7,7 +7,7 @@ import fileinput
 import sys
 
 interface = sys.argv[1]
-
+enable = sys.argv[2]
 # -------------------------- check or write  -----------------------------
 # function to check if the file contain the value, if it isn't there the function will write it  
 def cow(file_dir,data):
@@ -32,20 +32,20 @@ def comment(interface,input_file,text,do=True,comment_glyph='#'):
     with fileinput.FileInput(input_file, inplace=True) as file:
         for line in file:
             if do:
-                print(line.replace(text,comment_glyph + text), end='')
+                print(line.replace(text,comment_glyph + text), end="")
             else:
-                print(line.replace(comment_glyph + text,text), end='')
+                print(line.replace(comment_glyph + text,text), end="")
 
 # ------------------------------ main -------------------------------------
-def main(interface):
-    # Add the configuration for dhcp requests on the interface 
-    data = ['auto ' + interface, \
-            'iface ' + interface + ' inet dhcp']
-    for value in data:
-       cow('/etc/network/interfaces', value)
+def main(interface,enable):
+    if enable=='False':
+        for path in execute(["ip",'l','set',interface,'down']):
+            print(path, end="")
+        for path in execute(["ip",'l','set',interface,'up']):
+            print(path, end="")
+    else:
+        # request ip from the specified interface
+        for path in execute(["dhclient",'-4','-v', interface]):
+            print(path, end="")
 
-    # request ip from the specified interface
-    for path in execute(["dhclient",'-4','-v', interface]):
-        print(path, end="")
-
-main(interface)
+main(interface,enable)
