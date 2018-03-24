@@ -4,8 +4,10 @@
 import os
 import subprocess
 import fileinput
-interface_default = 'eth1'
+import sys
 
+interface = sys.argv[1]
+release = sys.argv[2]
 # ----------- execute command and print the stout or stderr  ---------------
 def execute(cmd):
     popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
@@ -17,9 +19,10 @@ def execute(cmd):
         raise subprocess.CalledProcessError(return_code, cmd)
 
 # ------------------------------ main -------------------------------------
-def main(interface = interface_default,release=True):
+def main(interface,release):
     # remove dhclient.leases
-    if release:
+    if release==False:
+        print(release)
         dhcp_dir = os.listdir('/var/lib/dhcp')
         for files in dhcp_dir:
             # check if the file exist in the directory and erase it
@@ -27,11 +30,12 @@ def main(interface = interface_default,release=True):
                 print('the file exists')
                 os.remove('/var/lib/dhcp/dhclient.leases')
         # release ip from the specified interface
-        for path in execute(["dhclient",'-4','-d','-v','-r', interface]):
+        for path in execute(["dhclient",'-4','-v', interface]):
             print(path, end="")
     else:
+        print(release)
         # renew ip from the specified interface
-        for path in execute(["dhclient",'-4','-d','-v', interface]):
+        for path in execute(["dhclient",'-4','-v','-r', interface]):
             print(path, end="")
-main()
+main(interface,release)
 

@@ -5,7 +5,7 @@ import os
 import fileinput
 import ipaddress
 import subprocess
-
+import sys
 # testing
 #interface_default = 'eth0'
 #hostname_default = 'client'
@@ -18,6 +18,17 @@ hostname = sys.argv[2]
 ip = sys.argv[3]
 mac = sys.argv[4]
 
+# ----------- execute command and print the stout or stderr  -------------
+def execute(cmd):
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+    for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line
+    popen.stdout.close()
+    return_code = popen.wait()
+    if return_code:
+        raise subprocess.CalledProcessError(return_code, cmd)
+
+# ---------------------------------- main --------------------------------
 # -------------------------- comment function -----------------------------
 def comment(interface,input_file,text,do=True,comment_glyph='#'):
     with fileinput.FileInput(input_file, inplace=True) as file:
@@ -39,13 +50,14 @@ def cow(file_dir,data):
 # -------------------------- main -----------------------------
 
 def main(interface, hostname, ip, mac):
-    checkfile = 'include \"dhcpd.d/static.leases.'+ interface
+
+    checkfile = 'include \"/etc/dhcpcd.d/static.leases.' + interface + '\";'
     cow('/etc/dhcpcd.conf', checkfile)
 
     static_leases = open('/etc/dhcpcd.d/static.leases.' + interface,'a')
     data = [ 'host ' + hostname + '{' \
              ,'hardware ethernet ' + mac + ';' \
-             , 'fiex-address ' + ip + ';' \
+             , 'fixed-address ' + ip + ';' \
              , '}\n' ]
     static_leases.writelines('\n'.join(data))
 

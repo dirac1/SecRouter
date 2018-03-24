@@ -31,3 +31,15 @@ Debugging DHCP SERVER
 
 o Fix disable.py/enable.py to comment and uncomment the statement 'include /etc/dhcpcd.d/[interface]';
 
+
+# -------------------------------------------------------------------
+# 2018-03-21
+
+o All scripts in dhcp_server are working after debug with the prototype
+    - You should find the way to show in leases status tab which hostnames are in static mode 
+ 
+# -------------------------------------------------------------------
+# 2018-03-22
+
+o Debugged dhcp_client scripts
+

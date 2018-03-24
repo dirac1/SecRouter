@@ -10,7 +10,8 @@ import sys
 # variables
 interface = sys.argv[1]
 network= sys.argv[2]
-gateway= sys.argv[3]
+prefix = sys.argv[3]
+gateway= sys.argv[4]
 
 # -------------------------- comment function -----------------------------
 def comment(interface,input_file,text,do=True,comment_glyph='#'):
@@ -32,12 +33,12 @@ def execute(cmd):
         raise subprocess.CalledProcessError(return_code, cmd)
 
 # -------------------------- main -----------------------------
-def main(interface,network,gateway):
-
+def main(interface,network,prefix,gateway):
+    networkprefix = network +"/"+ prefix
     # -------------------------- ip calculations -----------------------------
-    netmask = str(ipaddress.ip_network(network).netmask) # makes the netmask calculation using the variable network
+    netmask = str(ipaddress.ip_network(networkprefix).netmask) # makes the netmask calculation using the variable network
 
-    broadcast = str(ipaddress.ip_network(network).broadcast_address)
+    broadcast = str(ipaddress.ip_network(networkprefix).broadcast_address)
 
     # -------------------------- --------------- -----------------------------
     dhcp_dir = os.listdir('/etc/dhcpcd.d/')
@@ -54,9 +55,9 @@ def main(interface,network,gateway):
 
             # comment interfaces.d/[interface] 
             data = [ 'auto ' + interface \
-                     , '    iface ' + interface + ' inet' + ' static' \
-                     , '    address ' + gateway \
-                     , '    netmask ' + netmask ]
+                     , 'iface ' + interface + ' inet' + ' static' \
+                     , 'address ' + gateway \
+                     , 'netmask ' + netmask ]
             for value in data:
                 comment(interface,'/etc/network/interfaces.d/'+interface,value,False)
         else:
@@ -66,4 +67,4 @@ def main(interface,network,gateway):
     for path in execute(['/etc/init.d/isc-dhcp-server','restart']):
         print(path, end='')
 
-main(interface,network,gateway)
+main(interface,network,prefix,gateway)

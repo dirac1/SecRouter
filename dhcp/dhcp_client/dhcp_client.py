@@ -4,7 +4,9 @@
 import os
 import subprocess
 import fileinput
-interface_default = 'eth1'
+import sys
+
+interface = sys.argv[1]
 
 # -------------------------- check or write  -----------------------------
 # function to check if the file contain the value, if it isn't there the function will write it  
@@ -35,23 +37,15 @@ def comment(interface,input_file,text,do=True,comment_glyph='#'):
                 print(line.replace(comment_glyph + text,text), end='')
 
 # ------------------------------ main -------------------------------------
-def main(interface = interface_default):
+def main(interface):
     # Add the configuration for dhcp requests on the interface 
     data = ['auto ' + interface, \
             'iface ' + interface + ' inet dhcp']
     for value in data:
-       cow('/etc/network/interface/', value)
+       cow('/etc/network/interfaces', value)
 
     # request ip from the specified interface
-    for path in execute(["dhclient",'-4','-d','-v', interface]):
+    for path in execute(["dhclient",'-4','-v', interface]):
         print(path, end="")
 
-# You have a check button to activate the dhcp client
-# Renew and Release buttons will be separated 
-
-# All the data from the lease is in /var/lib/dhcp/dhclient.lease
-# /etc/network/interface 
-#    auto [interface]
-#    iface [interface] inet dhcp
-# delete dhclient.leases to forget the lease
-
+main(interface)
