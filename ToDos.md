@@ -39,7 +39,7 @@ Debugging DHCP Server
 
 Debugging DHCP Server
 ---------------------
-* All scripts in dhcp_server are working after debug with the prototype
+* All scripts in dhcp\_server are working after debug with the prototype
     - You should find the way to show in leases status tab which hostnames are in static mode 
  
 **2018-03-22**
@@ -77,6 +77,9 @@ Ethernet & Routing
     - DNS will have 1 toggle button (enable/disable) and 2 normal buttons to flush the cache and to view cache
     - DNS enable button will run a script in the router while disable will simply stop and disable (don't start on boot) the bind9 service
     - view cache will adquire data from the 
-TO FIX: The cache isn't showed inside the database but the DNS server is working 
-* Static configuration and static routing  
+TO FIX: The cache isn't showed inside the database but the DNS server is working  **DONE**
 
+**2018-03-28**
+
+Ethernet & Routing
+---------------------

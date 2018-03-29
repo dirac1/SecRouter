@@ -23,25 +23,10 @@ def execute(cmd):
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
 
-# -------------------------- check or write  -----------------------------
-# function to check if the file contain the value, if it isn't there the function will write it  
-def cow(file_dir,data):
-     with open(file_dir,'r+') as input_file:
-         lines = [line.strip().replace('\n','') for line in input_file.readlines()]
-         if data not in lines:
-            print("data not found")
-            input_file.write(data+'\n')
-
 # ---------------------------------- main --------------------------------
 def main(server1,server2,server3,max_cache_size):
 
     max_cache_size = int(max_cache_size)*math.pow(10,6)
-
-
-
-    #------------------ writing on /etc/default/isc-dhcp-server -------------------------
-    cow('/etc/default/bind9' , 'OPTIONS=\"-u bind -4\"')
-    #------------------ writing on /etc/bind/named.conf.options -------------------------
 
     data = [ 'acl allowed {', \
              'localhost;', \
@@ -65,5 +50,9 @@ def main(server1,server2,server3,max_cache_size):
     # Restart the DNS server to apply the changes     
     for path in execute(["systemctl","restart","bind9"]):
         print(path , end = '')
+    for path in execute(["systemctl","enable","bind9"]):
+        print(path , end = '')
     for path in execute(["named-checkconf"]):
         print(path , end = '')
+
+main(server1,server2,server3,max_cache_size)
