@@ -17,6 +17,7 @@ def execute(cmd):
 
 # ---------------------------------- main --------------------------------
 def main():
+    os.remove('/home/secrouter/eth_route/dns/parsed_cache.csv') # removing old cache list
     # flush dns cache and reload the dns server     
     for path in execute(["rndc","flush"]):
         print(path , end = '')
