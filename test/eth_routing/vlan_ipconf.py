@@ -47,16 +47,15 @@ def execute(cmd):
 
 # ---------------------------------- main --------------------------------
 def main(enable,conf_type,vlan_raw_device,vlan_id,mtu,network,prefix,ip,gw):
+    file_test='/home/dirac/SecRouter/vlan.d/'+'vlan'+vlan_id
     file_dir = '/etc/network/vlan.d/'
     file_int = '/etc/network/vlan.d/'+'vlan'+vlan_id
 
-    if network=='':
-        print('manual/dhcp type')
-    else:
-        # -------------------------- ip calculations -----------------------------
-        networkprefix = network+'/'+prefix
-        netmask = str(ipaddress.ip_network(networkprefix).netmask)
-        broadcast = str(ipaddress.ip_network(networkprefix).broadcast_address)
+    # -------------------------- ip calculations -----------------------------
+    networkprefix = network+'/'+prefix
+
+    netmask = str(ipaddress.ip_network(networkprefix).netmask)
+    broadcast = str(ipaddress.ip_network(networkprefix).broadcast_address)
 
     # ------------------------- configuration --------------------------------
     if enable=='1': # Enable the vlan 
@@ -68,9 +67,9 @@ def main(enable,conf_type,vlan_raw_device,vlan_id,mtu,network,prefix,ip,gw):
                      'pre-up ifconfig $IFACE up', \
                      'post-down ifconfig $IFACE down', \
                      'vlan-raw-device '+ vlan_raw_device, ]
-            open(file_int, 'a').close()
+            open(file_test, 'a').close()
             for value in data:
-                cow(file_int,value)
+                cow(file_test,value)
 
         if conf_type=='2': # conf_type == static 
            # --------------------------------------- 
@@ -79,27 +78,22 @@ def main(enable,conf_type,vlan_raw_device,vlan_id,mtu,network,prefix,ip,gw):
                      'address ' + ip, \
                      'netmask ' + netmask, \
                      'gateway ' + gw ]
-            open(file_int, 'a').close()
+            open(file_test, 'a').close()
             for value in data:
-                cow(file_int,value)
+                cow(file_test,value)
 
         if conf_type=='3': # conf_type == dhcp 
            # --------------------------------------- 
             data = [ 'auto ' + vlan_raw_device+'.'+vlan_id, \
                      'iface ' + vlan_raw_device+'.'+vlan_id + ' inet dhcp' ]
-            open(file_int, 'a').close()
+            open(file_test, 'a').close()
             for value in data:
-                cow(file_int,value)
+                cow(file_test,value)
 
-        for path in execute(['ip','link','add','link',vlan_raw_device,'name',vlan_raw_device+'.'+vlan_id , 'type', 'vlan','id',vlan_id]):
-            print(path,end=' ')
-        for path in execute(['ifquery','-a']):
-            print(path, end='')
-        for path in execute(['ip','link','set','dev',vlan_raw_device+'.'+vlan_id,'down']):
-            print(path, end='')
-        for path in execute(['ip','link','set','dev',vlan_raw_device+'.'+vlan_id,'up']):
-            print(path, end='')
-
+#    for path in execute(['ifreload','-a']):
+#        print(path, end='')
+#    for path in execute(['ifquery','-a']):
+#        print(path, end='')
     else: # Disable the vlan 
 
         if conf_type=='1': # conf_type == manual 
@@ -109,9 +103,9 @@ def main(enable,conf_type,vlan_raw_device,vlan_id,mtu,network,prefix,ip,gw):
                      'pre-up ifconfig $IFACE up', \
                      'post-down ifconfig $IFACE down', \
                      'vlan-raw-device '+ vlan_raw_device, ]
-            open(file_int, 'a').close()
+            open(file_test, 'a').close()
             for value in data:
-                cor(file_int,value,'')
+                cor(file_test,value,'')
 
         if conf_type=='2': # conf_type == static 
            # --------------------------------------- 
@@ -120,26 +114,22 @@ def main(enable,conf_type,vlan_raw_device,vlan_id,mtu,network,prefix,ip,gw):
                      'address ' + ip, \
                      'netmask ' + netmask, \
                      'gateway ' + gw ]
-            open(file_int, 'a').close()
+            open(file_test, 'a').close()
             for value in data:
-                cor(file_int,value,'')
+                cor(file_test,value,'')
 
         if conf_type=='3': # conf_type == dhcp 
            # --------------------------------------- 
             data = [ 'auto ' + vlan_raw_device+'.'+vlan_id, \
                      'iface ' + vlan_raw_device+'.'+vlan_id + ' inet dhcp' ]
-            open(file_int, 'a').close()
+            open(file_test, 'a').close()
             for value in data:
-                cor(file_int,value,'')
+                cor(file_test,value,'')
 
-        for path in execute(['ip','link','delete',vlan_raw_device+'.'+vlan_id]):
-            print(path,end=' ')
-        for path in execute(['ifquery','-a']):
-            print(path, end='')
-        for path in execute(['ip','link','set','dev',vlan_raw_device,'down']):
-            print(path, end='')
-        for path in execute(['ip','link','set','dev',vlan_raw_device,'up']):
-            print(path, end='')
+#    for path in execute(['ifreload','-a']):
+#        print(path, end='')
+#    for path in execute(['ifquery','-a']):
+#        print(path, end='')
 
 main(enable,conf_type,vlan_raw_device,vlan_id,mtu,network,prefix,ip,gw)
 
