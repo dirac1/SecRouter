@@ -79,7 +79,21 @@ Ethernet & Routing
     - view cache will adquire data from the 
 TO FIX: The cache isn't showed inside the database but the DNS server is working  **DONE**
 
-**2018-03-28**
+**2018-03-31**
 
 Ethernet & Routing
 ---------------------
+* Interfaces, vlans, bridges configuration will be made using three separated directories included inside /etc/network/interfaces in the correct order -> /etc/network/interfaces.d -> /etc/network/vlan.d -> /etc/network/bridge.d
+    - An initial script bonded to the sub-category button will write the statements inside /etc/network/ 
+    - Therefore, each interface configuration will be placed based on his type.
+
+* The static routing sub-category will bond to the interface used (interface,bridge,vlan)
+
+* The same method will be used for arp 
+    
+**2018-03-31**
+
+Ethernet & Routing
+---------------------
+
+* Creating the in_ipconf, vlan_ipconf and bridge_ipconf scripts 
