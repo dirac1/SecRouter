@@ -95,5 +95,20 @@ Ethernet & Routing
 
 Ethernet & Routing
 ---------------------
-
 * Creating the in_ipconf, vlan_ipconf and bridge_ipconf scripts 
+
+
+**2018-04-01**
+
+Ethernet & Routing
+---------------------
+* Debugging and improving int,vlan,bridge scripts
+
+**2018-04-01**
+
+Ethernet & Routing
+---------------------
+* Created static_route and static_arp and debugged them.
+
+
+

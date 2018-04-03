@@ -52,6 +52,7 @@ def main(interface,network,prefix,gateway):
             comment(interface,'/etc/dhcpcd.conf','include \"/etc/dhcpcd.d/'+interface+'.conf'+'\";')
 
             # comment interfaces.d/[interface] 
+            # TO MODIFY
             data = [ 'auto ' + interface \
                      , 'iface ' + interface + ' inet' + ' static' \
                      , 'address ' + gateway \

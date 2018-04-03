@@ -67,6 +67,7 @@ def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_S
 
     #------------------ writing on /etc/network/interfaces.d/[interface] ----------------
     # There's a tricky thing in this code for the future you'll need to review it
+    # TO MODIFY
     data = [ 'auto ' + interface, \
              '    iface ' + interface + ' inet ' + 'static', \
              '    address ' + gateway, \
