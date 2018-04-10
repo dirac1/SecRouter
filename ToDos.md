@@ -110,5 +110,21 @@ Ethernet & Routing
 ---------------------
 * Created static_route and static_arp and debugged them.
 
+**2018-04-08**
+
+Ethernet & Routing
+---------------------
+* Debugging  bridge script with the GUI
+
+Firewall
+--------
+Firewall will contain three sub-categories: Filter, Port-Forwarding and NAT
+
+* Documenting and sketching Filter module
+
+**2018-04-08**
+
+Ethernet & Routing
+---------------------
 
 

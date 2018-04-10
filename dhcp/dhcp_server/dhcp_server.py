@@ -62,21 +62,6 @@ def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_S
     # -------------------------- writing on /etc/dhcpcp.conf-----------------------------
     cow( '/etc/dhcpcd.conf' , 'include \"/etc/dhcpcd.d/' + interface + '.conf\"' + ';' )
 
-    # -------------------------- writing on /etc/dhcpcp.conf-----------------------------
-    cow( '/etc/network/interfaces' , 'source /etc/network/interfaces.d/' + interface )
-
-    #------------------ writing on /etc/network/interfaces.d/[interface] ----------------
-    # There's a tricky thing in this code for the future you'll need to review it
-    # TO MODIFY
-    data = [ 'auto ' + interface, \
-             '    iface ' + interface + ' inet ' + 'static', \
-             '    address ' + gateway, \
-             '    netmask ' + netmask ]
-    network_interface = '/etc/network/interfaces.d/' + interface
-    dhcpd = open( network_interface , 'w+' )
-    dhcpd.writelines('\n'.join(data))
-    dhcpd.close()
-
     # ------------- checking and overwriting /etc/dhcpcd.d/ínterface.conf ----------
     dhcp_dir = os.listdir('/etc/dhcpcd.d/')
     for files in dhcp_dir:

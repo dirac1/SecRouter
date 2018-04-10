@@ -18,9 +18,9 @@ def cor(file_dir,data,replace):
 def main(interface):
     cor( '/etc/default/isc-dhcp-server', 'INTERFACESv4=\"' + interface + '\"', ' ' )
     cor( '/etc/dhcpcd.conf' , 'include \"/etc/dhcpcd.d/' + interface + '.conf\"' + ';' , ' ' )
-    cor( '/etc/network/interfaces' , 'source /etc/network/interfaces.d/' + interface, ' ' )
+#    cor( '/etc/network/interfaces' , 'source /etc/network/interfaces.d/' + interface, ' ' )
 
-    os.remove('/etc/network/interfaces.d/'+interface)
+#    os.remove('/etc/network/interfaces.d/'+interface)
     dhcp_dir = os.listdir('/etc/dhcpcd.d/')
     for files in dhcp_dir:
         if files == interface + '.conf': # check if the file exist in the directory and erase it
