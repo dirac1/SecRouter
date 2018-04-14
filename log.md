@@ -122,9 +122,23 @@ Firewall will contain three sub-categories: Filter, Port-Forwarding and NAT
 
 * Documenting and sketching Filter module
 
-**2018-04-08**
+**2018-04-09**
 
 Ethernet & Routing
 ---------------------
 
+* Debugging Vlan script and dhcp server modifications 
+
+**2018-04-10**
+
+Ethernet & Routing
+---------------------
+
+* Debugging ip route script 
+
+Firewall
+--------
+* The iptables rule design will be handled inside the GUI and  will be send to a script that will apply and save the rule
+
+*  Designing on paper Filter module
 
