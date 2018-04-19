@@ -110,7 +110,7 @@ Ethernet & Routing
 ---------------------
 * Created static_route and static_arp and debugged them.
 
-**2018-04-08**
+**2018-04-09**
 
 Ethernet & Routing
 ---------------------
@@ -122,23 +122,44 @@ Firewall will contain three sub-categories: Filter, Port-Forwarding and NAT
 
 * Documenting and sketching Filter module
 
-**2018-04-09**
+**2018-04-13/14**
 
 Ethernet & Routing
 ---------------------
 
 * Debugging Vlan script and dhcp server modifications 
 
-**2018-04-10**
+**2018-04-15**
 
 Ethernet & Routing
 ---------------------
 
-* Debugging ip route script 
+* Debugging ip route script  and arp static script
 
 Firewall
 --------
 * The iptables rule design will be handled inside the GUI and  will be send to a script that will apply and save the rule
 
-*  Designing on paper Filter module
+* Designing on paper Filter module
 
+**2018-04-16**
+
+Firewall
+--------
+* fix filter.py, sma function  and improve the whole script **DONE**
+* Filter subsection GUI ready, testing backend 
+* Designed Filter-controller.py script 
+
+**2018-04-17**
+
+Firewall
+--------
+* Debugged Firewall_controller.py (previously Filter_controller.py) script
+* Filter subsection already tested Match and Target
+* Nat backend script almost done
+* Main Firewall section GUI designed with commands
+
+**2018-04-18**
+
+Firewall
+--------

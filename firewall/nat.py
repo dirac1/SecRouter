@@ -10,15 +10,13 @@ def apply_filter (self):
        time_match = ""
        state = ""
        string_match = ""
-       mac = ""
        ttl_match = ""
-       geoip = ""
        comment = ""
        super_match = ""
        def sma(value,salt,is_not):
            salt = salt + ' '
            return salt + value if is_not == False else salt + '! ' + value + ' '
-   # ------------------------------- FILTER SUB-CATEGORY -------------------------------
+   # ------------------------------- NAT SUB-CATEGORY -------------------------------
    # --- MATCHES ---
        # IP match
        ## Source Address
@@ -246,14 +244,6 @@ def apply_filter (self):
 
        # String Match END
 
-       # MAC Match
-       if self.e_mac.isChecked():
-          mac = self.mac_line_edit.text()
-          mac = sma(mac,'-m mac --mac-source',self.mac_not.isChecked()) # ONLY FOR INPUT AND FORWARD CHAIN!
-       else:
-           mac = ''
-       # MAC Match END
-
        # TTL Match
        # -m ttl --ttl-eq --ttl-gt --ttl-lt
        if self.e_ttl.isChecked():
@@ -280,36 +270,34 @@ def apply_filter (self):
        else:
            ttl_match = ''
        # TTL Match END
-       # geoIP Match
-       if self.e_geoip.isChecked():
-          geoip = self.geoip_line_edit.text()
-          geoip = sma(geoip,'-m geoip --source-country',self.geoip_not.isChecked())
-       else:
-          geoip  = ''
-
-       # geoIP Match END
 
        # comment Match
        if self.e_comment.isChecked():
           comment = self.comment_line_edit.text()
-          comment = '-m comment --comment ' + '\'' + 'comment' + '\' '
+          comment = '-m comment --comment ' + '\'' + 'comment' + '\'' + ' '
        else:
           comment  = ''
 
-       # geoIP Match END
-
        # General definition of matches
-       if self.e_comment.isChecked() or self.e_geoip.isChecked() or self.e_ttl.isChecked()  or self.e_string.isChecked() or  self.e_time.isChecked() or  self.e_mac.isChecked() or sef.e_limit.isChecked() or self.e_state.isChecked() or self.e_tcp_Match.isChecked() or self.e_multi_port.isChecked() or self.e_udp_Match.isChecked() or self.e_icmp_type.isChecked() or self.e_IP_Match.isChecked():
+       if self.e_comment.isChecked() or self.e_geoip.isChecked() or self.e_ttl.isChecked()  or self.e_string.isChecked() or  self.e_time.isChecked() or sef.e_limit.isChecked() or self.e_state.isChecked() or self.e_tcp_Match.isChecked() or self.e_multi_port.isChecked() or self.e_udp_Match.isChecked() or self.e_icmp_type.isChecked() or self.e_IP_Match.isChecked():
            super_match =  src_addr  + dst_addr + iprange_match + tcp_match  + udp_match + icmp_type
-           super_match = super_match  + multi_match  +limit_match+ time_match + state + string_match  + mac + ttl_match
-           super_match = super_match  + geoip + comment
+           super_match = super_match  + multi_match  +limit_match+ time_match + state + string_match + ttl_match
+           super_match = super_match   + comment
 
-       print(super_match)
+       # NAT TARGETS : MASQUERADE - REDIRECT - SNAT - DNAT - LOG
        x = self.action_combobox.currentText()
-       if x == "JUMP":
-           action = '-j ' + self.chain_target_action.currentText()
-       if x == "REJECT":
-           action = '-j REJECT --reject-with ' + self.reject_combobox.currentText()
+       if x == "MASQUERADE": # ONLY FOR POSTROUTING CHAIN
+           action = '-j MASQUERADE '
+           if self.e_masquerade_to_ports.isChecked():
+               action = action + '--to-ports ' + masquerade_to_ports_line_edit.text() # -j MASQUERADE --to-ports 1-1024
+       if x == "REDIRECT": # ONLY FOR PREROUTING AND POSTROUTING CHAIN
+           action = '-j REDIRECT '
+           if self.e_redirect_to_ports.isChecked():
+               action = action + '--to-ports ' + redirect_to_ports_line_edit.text() # -j REDIRECT --to-ports 1-1024
+       if x == "SNAT": # ONLY FOR INPUT AND  POSTROUTING CHAIN
+           action = '-j SNAT --to-source ' + snat_to_source_line_edit.text() # -j SNAT --to-source [ipaddr[-ipaddr]][:port[-port]]
+       if x == "DNAT": # ONLY FOR OUTPUT AND  PREROUTING CHAIN
+           action = '-j DNAT --to-destination ' + redirect_to_ports_line_edit.text() # -j DNAT --to-destination [ipaddr[-ipaddr]][:port[-port]]
        if x == "LOG":
            action = '-j LOG --log-level' + self.log_combobox.currentText() + ' --log-prefix ' + self.prefix_line_edit.text()
        print(action)
