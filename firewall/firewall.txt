@@ -1,4 +1,3 @@
-
 # Main_section
 Add_User_Chain : 'iptables -N ' + new_chain
 Del_User_Chain : 'iptables -X ' + new_chain
@@ -6,5 +5,5 @@ Add Policy : 'iptables -P ' + chain + ' ' +  policy
 Delete Rule : 'iptables -D + chain + ' ' + line
 View : 'iptables -L -n --line-numbers -t ' + table + ' ' + '-L ' + chain
 Flush : 'iptables -F ' + chain
-#
+
 
