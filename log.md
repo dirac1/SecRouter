@@ -163,3 +163,12 @@ Firewall
 
 Firewall
 --------
+* Debugged Nat frontend (almost done)
+* Finished filter frontend/backend
+* Finished Main frontend/backend
+
+SysAdmin
+--------
+
+* Started the GUI design on paper it'll contain three sections: Tools, System and ...
+
