@@ -159,7 +159,7 @@ Firewall
 * Nat backend script almost done
 * Main Firewall section GUI designed with commands
 
-**2018-04-18**
+**2018-04-18-19**
 
 Firewall
 --------
@@ -169,6 +169,11 @@ Firewall
 
 SysAdmin
 --------
-
 * Started the GUI design on paper it'll contain three sections: Tools, System and ...
 
+**2018-04-18**
+
+SysAdmin
+--------
+* Started init_script.sh 
+* Installed xtables-addons (geoIP) and netdata to monitor the system

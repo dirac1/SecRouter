@@ -45,6 +45,16 @@ def execute(cmd):
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
 
+# TO BE TESTED
+# ----------- remove white lines -------------
+def rwl(filename):
+    with open(filename) as infile, open('output', 'w') as outfile:
+        for line in infile:
+            if not line.strip(): continue  # skip the empty line
+            outfile.write(line)  # non-empty line. Write it to output
+    os.remove(filename)
+    os.rename('output',filename)
+
 # ---------------------------------- main --------------------------------
 def main(enable,conf_type,int_bridge,stp_mode,bridge_name,network,prefix,ip,gw):
 

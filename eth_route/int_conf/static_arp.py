@@ -40,15 +40,18 @@ def execute(cmd):
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
 
+# TO BE TESTED
+# ----------- remove white lines -------------
+def rwl(filename):
+    with open(filename) as infile, open('output', 'w') as outfile:
+        for line in infile:
+            if not line.strip(): continue  # skip the empty line
+            outfile.write(line)  # non-empty line. Write it to output
+    os.remove(filename)
+    os.rename('output',filename)
+
 # ---------------------------------- main --------------------------------
 def main(enable,conf_type,interface,ip,mac):
-
-    # -------------------------- ip calculations -----------------------------
-#    networkprefix = dst_network+'/'+prefix
-#    netmask = str(ipaddress.ip_network(networkprefix).netmask)
-#    broadcast = str(ipaddress.ip_network(networkprefix).broadcast_address)
-
-    # ip route add [dst_network]+/+[prefix] via [gw] dev [interface]
 
     # ------------------------- configuration --------------------------------
     if enable=='1': # Enable the route 
