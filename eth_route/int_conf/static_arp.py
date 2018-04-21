@@ -40,25 +40,31 @@ def execute(cmd):
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
 
-# TO BE TESTED
 # ----------- remove white lines -------------
-def rwl(filename):
-    with open(filename) as infile, open('output', 'w') as outfile:
-        for line in infile:
-            if not line.strip(): continue  # skip the empty line
-            outfile.write(line)  # non-empty line. Write it to output
-    os.remove(filename)
-    os.rename('output',filename)
+def rwl(directory,filename):
+    file_to_clean = directory+filename
+    for files in os.listdir(directory):
+        if files == filename:
+            with open(file_to_clean) as infile, open('output', 'w') as outfile:
+                for line in infile:
+                    if not line.strip(): continue  # skip the empty line
+                    outfile.write(line)  # non-empty line. Write it to output
+            os.remove(file_to_clean)
+            os.rename('output',file_to_clean)
+        else:
+            print('rwl: The file does not exist')
 
 # ---------------------------------- main --------------------------------
 def main(enable,conf_type,interface,ip,mac):
-
+    print(" ### Starting configuration ### ")
+    # ----------- remove white lines -------------
+    rwl('/etc/network/arp.d/','ether.'+interface)
     # ------------------------- configuration --------------------------------
     if enable=='1': # Enable the route 
 
         if conf_type=='1': # conf_type == phy 
            # --------------------------------------- 
-            file_arp = '/etc/ether.'+interface
+            file_arp = '/etc/network/arp.d/ether.'+interface
             file_int = '/etc/network/interfaces.d/'+interface
             data_arp = mac+' '+ip
             data_int = 'post-up arp -f '+file_arp
@@ -73,7 +79,7 @@ def main(enable,conf_type,interface,ip,mac):
 
         if conf_type=='2': # conf_type == vlan 
            # --------------------------------------- 
-            file_arp = '/etc/ether.'+interface
+            file_arp = '/etc/network/arp.d/ether.'+interface
             file_int = '/etc/network/vlan.d/'+interface
             data_arp = mac+' '+ip
             data_int = 'post-up arp -f '+file_arp
@@ -89,7 +95,7 @@ def main(enable,conf_type,interface,ip,mac):
 
         if conf_type=='3': # conf_type == bridge
            # --------------------------------------- 
-            file_arp = '/etc/ether.'+interface
+            file_arp = '/etc/network/arp.d/ether.'+interface
             file_int = '/etc/network/bridge.d/'+interface
             data_arp = mac + ' ' + ip
             data_int = 'post-up arp -f '+ file_arp
@@ -102,6 +108,7 @@ def main(enable,conf_type,interface,ip,mac):
             for path in execute(['arp','-f',file_arp]):
                 print(path, end='')
 
+        print(" ### Actual configuration ### ")
         for path in execute(['ifquery','-a']):
             print(path, end='')
 
@@ -109,7 +116,7 @@ def main(enable,conf_type,interface,ip,mac):
 
         if conf_type=='1': # conf_type == phy 
            # --------------------------------------- 
-            file_arp = '/etc/ether.'+interface
+            file_arp = '/etc/network/arp.d/ether.'+interface
             file_int = '/etc/network/interfaces.d/'+interface
             data_arp = mac+' '+ip
             data_int = 'post-up arp -f '+file_arp
@@ -124,7 +131,7 @@ def main(enable,conf_type,interface,ip,mac):
 
         if conf_type=='2': # conf_type == vlan 
            # --------------------------------------- 
-            file_arp = '/etc/ether.'+interface
+            file_arp = '/etc/network/arp.d/ether.'+interface
             file_int = '/etc/network/vlan.d/'+interface
             data_arp = mac+' '+ip
             data_int = 'post-up arp -f '+file_arp
@@ -139,7 +146,7 @@ def main(enable,conf_type,interface,ip,mac):
 
         if conf_type=='3': # conf_type == bridge
            # --------------------------------------- 
-            file_arp = '/etc/ether.'+interface
+            file_arp = '/etc/network/arp.d/ether.'+interface
             file_int = '/etc/network/bridge.d/'+interface
             data_arp = mac + ' ' + ip
             data_int = 'post-up arp -f '+ file_arp
@@ -152,6 +159,7 @@ def main(enable,conf_type,interface,ip,mac):
             for path in execute(['ip','neigh','del',ip,'dev',interface]):
                 print(path, end='')
 
+        print(" ### Actual configuration ### ")
         for path in execute(['ifquery','-a']):
             print(path, end='')
 

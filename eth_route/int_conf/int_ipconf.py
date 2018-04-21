@@ -29,8 +29,8 @@ def cow(file_int,data):
      with open(file_int,'r+') as input_file:
          lines = [line.strip().replace('\n','') for line in input_file.readlines()]
          if data not in lines:
-            print("data not found")
-            input_file.write(data+'\n')
+             print("cow: data not found")
+             input_file.write(data+'\n')
 
 # ----------- execute command and print the stout or stderr  -------------
 def execute(cmd):
@@ -42,15 +42,19 @@ def execute(cmd):
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
 
-# TO BE TESTED
 # ----------- remove white lines -------------
-def rwl(filename):
-    with open(filename) as infile, open('output', 'w') as outfile:
-        for line in infile:
-            if not line.strip(): continue  # skip the empty line
-            outfile.write(line)  # non-empty line. Write it to output
-    os.remove(filename)
-    os.rename('output',filename)
+def rwl(directory,filename):
+    file_to_clean = directory+filename
+    for files in os.listdir(directory):
+        if files == filename:
+            with open(file_to_clean) as infile, open('output', 'w') as outfile:
+                for line in infile:
+                    if not line.strip(): continue  # skip the empty line
+                    outfile.write(line)  # non-empty line. Write it to output
+            os.remove(file_to_clean)
+            os.rename('output',file_to_clean)
+        else:
+            print('rwl: The file does not exist')
 
 # ---------------------------------- main --------------------------------
 def main(enable,conf_type,interface,network,prefix,ip,gw):
@@ -64,6 +68,9 @@ def main(enable,conf_type,interface,network,prefix,ip,gw):
         networkprefix = network+'/'+prefix
         netmask = str(ipaddress.ip_network(networkprefix).netmask)
         broadcast = str(ipaddress.ip_network(networkprefix).broadcast_address)
+
+    # ----------- removing white lines -------------
+    rwl( '/etc/network/interfaces.d/' , interface )
 
     # ------------------------- configuration --------------------------------
     if enable=='1': # Enable the interface 

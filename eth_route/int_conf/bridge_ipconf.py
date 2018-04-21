@@ -32,8 +32,8 @@ def cow(file_dir,data):
      with open(file_dir,'r+') as input_file:
          lines = [line.strip().replace('\n','') for line in input_file.readlines()]
          if data not in lines:
-            print("data not found")
-            input_file.write(data+'\n')
+             print("cow: data not found")
+             input_file.write(data+'\n')
 
 # ----------- execute command and print the stout or stderr  -------------
 def execute(cmd):
@@ -47,13 +47,18 @@ def execute(cmd):
 
 # TO BE TESTED
 # ----------- remove white lines -------------
-def rwl(filename):
-    with open(filename) as infile, open('output', 'w') as outfile:
-        for line in infile:
-            if not line.strip(): continue  # skip the empty line
-            outfile.write(line)  # non-empty line. Write it to output
-    os.remove(filename)
-    os.rename('output',filename)
+def rwl(directory,filename):
+    file_to_clean = directory+filename
+    for files in os.listdir(directory):
+        if files == filename:
+            with open(file_to_clean) as infile, open('output', 'w') as outfile:
+                for line in infile:
+                    if not line.strip(): continue  # skip the empty line
+                    outfile.write(line)  # non-empty line. Write it to output
+            os.remove(file_to_clean)
+            os.rename('output',file_to_clean)
+        else:
+            print('rwl: The file does not exist')
 
 # ---------------------------------- main --------------------------------
 def main(enable,conf_type,int_bridge,stp_mode,bridge_name,network,prefix,ip,gw):
@@ -68,6 +73,10 @@ def main(enable,conf_type,int_bridge,stp_mode,bridge_name,network,prefix,ip,gw):
 
     file_dir = '/etc/network/bridge.d/'
     file_int = '/etc/network/bridge.d/'+bridge_name
+
+    # ----------- removing white lines -------------
+    rwl('/etc/network/bridge.d/',bridge_name)
+
     # ------------------------- configuration --------------------------------
     if enable=='1': # Enable the bridge 
 

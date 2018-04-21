@@ -9,6 +9,12 @@ def execute(cmd):
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
 
-# Example
-for path in execute(['systemctl','daemon-reload']):
-    print(path, end="")
+# cmd_in and cmd_out are tuples
+#popen = subprocess.Popen(cmd_in, stdout=subprocess.PIPE)
+#output = subprocess.check_output(cmd_out, stdin=popen.stdout)
+#popen.wait()
+
+def main():
+    for path in execute(['ls']):
+        print(path, end="")
+
