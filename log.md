@@ -196,3 +196,9 @@ SysAdmin
 --------
 * GUI design is ready, will have Three sections: ADMINISTRATION, LOGGING AND TOOLS
 
+**2018-04-22**
+
+SysAdmin
+--------
+* Adding backend configuration to the tools subsection
+* Creating backup.py 

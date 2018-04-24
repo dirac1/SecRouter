@@ -55,86 +55,142 @@ def rwl(directory,filename):
 # ---------------------------------- main --------------------------------
 def main(bor,filename):
 # BACKUP 
+    secrouter_backup_dir = '/home/secrouter/backup' # backup root directory
+    backup_dir = '/home/secrouter/backup/'+filename # backup directory
+    backup_dir_dhcp = backup_dir+'/dhcp' # dhcp directory
+    backup_dir_ethroute = backup_dir+'/ethroute' # ethernet and routing directory
     if bor == '0':
         # 1. create the file name directory with the hierarchy
-        # You must create the directories for DHCP, ETH&ROUTING and FIREWALL
-        secrouter_backup_dir = '/home/secrouter/backup'
-        backup_dir = '/home/secrouter/backup/'+filename
         os.mkdir(backup_dir)
 
-	# 2. Copy all the configurations files inside the file name directory.  
+        # dhcp directory creation
+        os.mkdir(backup_dir_dhcp)
+        os.mkdir(backup_dir_dhcp+'/dhcpcd.d')
+
+        # ethernet and routing directory
+        os.mkdir(backup_dir_ethroute)
+        os.mkdir(backup_dir_ethroute+'/interfaces.d')
+        os.mkdir(backup_dir_ethroute+'/vlan.d')
+        os.mkdir(backup_dir_ethroute+'/bridge.d')
+        os.mkdir(backup_dir_ethroute+'/arp.d')
+
+        # 2. Copy all the configurations files inside the file name directory.  
         # DHCP
         if os.path.isfile('/etc/dhcpcd.conf') == True:
-            shutil.copy2('/etc/dhcpcd.conf',backup_dir)
+            shutil.copy2('/etc/dhcpcd.conf',backup_dir_dhcp)
         if os.path.isfile('/etc/default/isc-dhcp-server') == True:
-            shutil.copy2('/etc/default/isc-dhcp-server',backup_dir)
+            shutil.copy2('/etc/default/isc-dhcp-server',backup_dir_dhcp)
 
-        dhcpcd_d = os.listdir('/etc/dhcpcd.d/')
-        for value in dhcpcd_d:
-            if os.path.isfile( dhcpcd_d + value ) == True:
-                shutil.copy2(dhcpcd_d + value , backup_dir )
+        dhcpcd_d = os.listdir('/etc/dhcpcd.d')
+        if dhcpcd != []:
+            for value in dhcpcd_d:
+                if os.path.isfile( dhcpcd_d + value ) == True:
+                    shutil.copy2(dhcpcd_d + value , backup_dir_dhcp+'/dhcpcd.d' )
 
         # Ethernet & Routing
         if os.path.isfile( '/etc/network/secrouter.conf' ) == True:
-            shutil.copy2('/etc/network/secrouter.conf' , backup_dir)
-        if os.path.isfile( '/etc/bing/named.local.options' ) == True:
-            shutil.copy2('/etc/bing/named.local.options' , backup_dir)
+            shutil.copy2('/etc/network/secrouter.conf' , backup_dir_eth_route)
+        if os.path.isfile( '/etc/bind/named.local.options' ) == True:
+            shutil.copy2('/etc/bing/named.local.options' , backup_dir_eth_route)
 
-        eth_multi_files = ['/etc/network/interfaces.d/', \
-                           '/etc/network/vlan.d/', \
-                           '/etc/network/bridge.d/', \
-                           '/etc/network/arp.d/' ]
+        eth_multi_files = ['/interfaces.d', \
+                           '/vlan.d', \
+                           '/bridge.d', \
+                           '/arp.d' ]
         for files in eth_multi_files:
-            this = os.listdir(file)
-            if this == []:
-               break
-            for value in files:
-                shutil.copy2(files + value , backup_dir )
+            this = os.listdir('/etc/network' + files)
+            if this != []:
+                for value in this:
+                    shutil.copy2('/etc/network' + files + '/' + value , backup_dir_ethroute + files )
 
         # Firewall
         if os.path.isfile('/etc/iptables.rules') == True:
             shutil.copy2('/etc/iptables.rules' , backup_dir)
 
         # Compressing ../backup/filename
-        backup = secrouter_backup_dir + '/' + filename + 'tar.gz'
+        backup = secrouter_backup_dir + '/' + filename + '.tar.gz'
         for path in execute(['tar','-czvf',backup_dir,backup]):
             print(path, end='')
 
 # RESTORE
-
     else:
-
     # 1. Descompress the backup file from the backup directory
-        secrouter_backup_dir = '/home/secrouter/backup'
-        backup = secrouter_backup_dir + '/' + filename + 'tar.gz'
-        for path in execute(['tar','-xzvf',backup,backup_dir]):
+        backup_compressed = secrouter_backup_dir + '/' + filename + '.tar.gz'
+        for path in execute(['tar','-xzvf',backup_compressed,backup_dir]):
             print(path, end='')
 
-    # 3. delete old configuration files
-    # 2. Copy the backup files from the filename to the system
-    # 5. delete the uncompressed files from the backup directory
+    # 2. delete old configuration files
+        os.remove('/etc/dhcpcd.conf')
+        os.remove('/etc/default/isc-dhcp-server')
+        dhcpcd_d = os.listdir('/etc/dhcpcd.d')
+        if this != []:
+            for value in this:
+                os.remove(dhcpcd_d+ '/' + files )
 
-    # 4. Restart The services 
+        os.remove('/etc/network/secrouter.conf')
+        os.remove('/etc/bing/named.local.options')
+        eth_multi_files = ['/interfaces.d', \
+                           '/vlan.d', \
+                           '/bridge.d', \
+                           '/arp.d' ]
+        for files in eth_multi_files:
+            this = os.listdir('/etc/network' + files)
+            if this != []:
+                for value in this:
+                    os.remove('/etc/network' + files + '/' + value)
+
+        os.remove('/etc/iptables.rules')
+        print('--- Deleted old configuration files ---')
+
+    # 3. Copy the backup files from the filename to the system
+        shutil.copy2(backup_dir_dhcp+'/dhcpcd.conf', '/etc')
+        shutil.copy2(backup_dir_dhcp+'isc-dhcp-server','/etc/default')
+
+        dhcpcd_d = os.listdir(backup_dir_dhcp+'/dhcpcd.d')
+        for value in dhcpcd_d:
+            if os.path.isfile( dhcpcd_d + value ) == True:
+                shutil.copy2(dhcpcd_d + value , '/etc/dhcpcd.d' )
+
+        # Ethernet & Routing
+            shutil.copy2(backup_dir_eth_route+'/secrouter.conf' , '/etc/network')
+            shutil.copy2(backup_dir_eth_route+'/named.local.options','/etc/bind')
+
+        eth_multi_files = ['/interfaces.d', \
+                           '/vlan.d', \
+                           '/bridge.d', \
+                           '/arp.d' ]
+        for files in eth_multi_files:
+            this = os.listdir(backup_dir_ethroute + files)
+            if this != []:
+                for value in this:
+                    shutil.copy2(backup_dir_ethroute + files + '/' + value , '/etc/network' + files )
+
+        # Firewall
+            shutil.copy2(backup_dir+'iptables.rules' , '/etc')
+        print('--- *** ---')
+        print('--- copied new configuration files ---')
+
+    # 4. delete the uncompressed files from the backup directory
+        shutil.rmtree('/home/secrouter/backup/'+ filename)
+
+    # 5. Restart The services 
+
         # Restart Networking
         for path in execute(['systemctl','restart','networking']):
             print(path, end='')
-        print(' ### New Ethernet & Routing configuration ###')
+        print('-----------------------------------')
+        print('NEW ETHERNET & ROUTING CONFIGURATION:')
         for path in execute(['ifquery','-a']):
             print(path, end='')
-        print(' ### ################## ###')
+        print('-----------------------------------')
 
         # Restart DHCP
+        print('-----------------------------------')
+        print('RESTARTING DHCP SERVER:')
         for path in execute(["systemctl","restart","isc-dhcp-server"]):
             print(path , end = '')
+        print('-----------------------------------')
 
-        # Release/Renew DHCP Client
-        # You have to lookup the interface inside the configuration files
-    #        for path in execute(['ip','link','set','dev',interface,'down']):
-    #            print(path, end='')
-    #        for path in execute(['ip','link','set','dev',interface,'up']):
-    #            print(path, end='')
-        for path in execute(["dhclient",'-4','-v', dhclient_interface]):
-            print(path, end="")
         # Restart Firewall
         iptables_rules = open('/etc/iptables.rules', 'w')
         p = subprocess.Popen(["iptables-restore"], stdout=iptables_rules)
@@ -150,6 +206,9 @@ def main(bor,filename):
             print(path, end="")
         print(command)
         print('-----------------------------------')
+        print('RESTARTING THE SYSTEM TO APPLY CHANGES')
+        for path in execute(['reboot']):
+            print(path, end="")
 
 main(bor,filename)
 
