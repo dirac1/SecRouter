@@ -184,3 +184,15 @@ SysAdmin
 Ethernet & Routing
 ------------------
 * Create a new function to erase blank lines in the configuration files, added stdout information regarding the configuration per function
+
+**2018-04-22**
+
+Firewall
+--------
+* Debugged NAT and Main
+* Documentation and Flow Diagrams
+
+SysAdmin
+--------
+* GUI design is ready, will have Three sections: ADMINISTRATION, LOGGING AND TOOLS
+

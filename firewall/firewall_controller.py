@@ -8,7 +8,8 @@ import subprocess
 
 # variables 
 rule = sys.argv[1]
-chain = sys.argv[2]
+table = sys.argv[2]
+chain = sys.argv[3]
 
 # --------------------------  check and replace  -----------------------------
 # function to check if the file contain the value, if it is there the function will delete it
@@ -37,7 +38,7 @@ def execute(cmd):
         raise subprocess.CalledProcessError(return_code, cmd)
 
 # ---------------------------------- main --------------------------------
-def main( rule , chain ):
+def main( rule , table, chain ):
 
     # Enable on boot
     data = ['#!/bin/sh' , \
@@ -46,7 +47,13 @@ def main( rule , chain ):
         cow('/etc/network/if-pre-up.d/iptables', value)
     command = rule.split(' ')
     command.insert(0,'iptables')
+    command.insert(1,'-t')
+    command.insert(2, table)
     # Apply rule
+    print('-----------------------------------')
+    print('RULE:')
+    print(command)
+    print('-----------------------------------')
     for path in execute(command):
         print(path, end='')
 
@@ -56,9 +63,10 @@ def main( rule , chain ):
     iptables_rules.close()
 
     # Present updated chain on CLI
-    for path in execute([ 'iptables','-n','--line-numbers','-L', chain ]):
+    for path in execute([ 'iptables','-n','--line-numbers','-t', table, '-L', chain ]):
         print(path, end='')
+    print('-----------------------------------')
 
-main( rule , chain )
+main( rule , table, chain )
 # Test with this rule:
 # iptables -A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT

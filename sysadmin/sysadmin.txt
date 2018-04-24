@@ -1,0 +1,112 @@
+ADMINISTRATION
+
+ - Password Management -
+
+Old password		___________ 
+New password 		___________
+Repeat new password 	___________
+
+ [ Apply ] -> $echo -e "Old_password\nNew_password\nRepeat_new_passwd" | passwd
+Result: __________________ [Show Stderror or Stdout of the command]
+
+Router Reboot [Reboot] -> $sudo reboot
+
+System Update  [Update] -> $ sudo apt-get update && sudo apt-get upgrade -y
+
+- Restore default router configuration -
+
+Restore to _____v -> { SOHO | SME | USER | No Configuration }
+
+ - Configuration Backup -
+
+Filename ________ [Save] [Delete] --> backup.py
+
+- Time and Date -
+
+Time __:__:__ (24h) [Set] -> $date --set hh:mm:ss && hwclock --systohc
+Time __:__:__ (24h) [Set] -> $date --set yyyy-mm-dd && hwclock --systohc
+timezone _____v { America/Caracas | ... } [set] -> $sudo cp /usr/share/[combobox] /etc/localtime 
+
+LOGGING
+
+_____v -> { DHCP | Firewall | DNS | Kernel | All }
+
+------------------------------
+|                            |
+|			     |
+|            Log             |
+|                            |
+|                            |
+------------------------------
+
+[Show / Refresh] -> $sudo journalctl -u [combobox] [clear] -> (clean the textbox)
+
+STATUS
+
+[Show Router Telemetry] -> Open up a browser and gets into [router_ip]:19999
+
+TOOLS
+
+ping ▶
+_______ [Ping] -> $ping [line_text]  (IP or URL)
+
+------------------------------
+|                            |
+|			     |
+|           output           |
+|                            |
+|                            |
+------------------------------
+
+traceroute ▶
+_______ [trace] -> $traceroute [line_text] (IP or URL)
+
+------------------------------
+|                            |
+|			     |
+|           output           |
+|                            |
+|                            |
+------------------------------
+ip lookup ▶
+_______ [lookup] -> $dig [line_text] (must be an URL)
+
+ip : ___________
+
+whois ▶
+__________ [whois] -> $whois [line_text] (IP or URL)a
+
+------------------------------
+|                            |
+|			     |
+|           output           |
+|                            |
+|                            |
+------------------------------
+
+IP Calculator ▶
+
+
+network ___________ / __
+
+       [Calculate] -> $ipcalc [line_text_ip]+[line_text_prefix]
+
+------------------------------
+|                            |
+|			     |
+|           result           |
+|                            |
+|                            |
+------------------------------
+
+Packet Sniffer ▶
+
+Interface _______v -> { eth0 | eth1 | ...} (no loopback) -> -i [combobox]
+
+[] Src. Address _______ -> n -src host [line_text_ip]
+[] Dst. Address _______ -> n -dst host [line_text_ip]
+[] Src. Port	_______ -> n -src port [line_text_port]
+[] Dst. Port	_______ -> n -dst port [line_text_port]
+[] save to	_______ -> -w [line_text_save_to]
+		
+		[Start/Stop] -> $tcpdump [options]
