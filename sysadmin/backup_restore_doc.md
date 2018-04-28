@@ -29,6 +29,7 @@ You can proceeed with this method:
 	1. create the file name directory with the same hierarchy of the system configuration files
 	2. Copy all the configurations files inside the file name directory.  
 	3. Compress this directory and save it inside the directory *backups*.
+	4. Delete the transitive directory
 
 Restore
 -------
