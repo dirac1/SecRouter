@@ -8,12 +8,9 @@ import subprocess
 
 interface = sys.argv[1]
 
-# --------------------------  check and replace  -----------------------------
-# function to check if the file contain the value, if it isn't there the function will write it
-def cor(file_dir,data,replace):
-    with fileinput.FileInput(file_dir,inplace=True) as file:
-        for line in file:
-            print(line.replace(data,replace),end=' ')
+# functions
+from misc_rs import cor # check or replace
+
 # ------------------------------------------------------------------------
 def main(interface):
     cor( '/etc/default/isc-dhcp-server', 'INTERFACESv4=\"' + interface + '\"', ' ' )

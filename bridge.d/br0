@@ -1,6 +1,0 @@
-auto br0
-iface br0 inet manual
-pre-up ifconfig $IFACE up
-post-down ifconfig $IFACE down
-bridge_ports eth0 eth1 eth2
-bridge_stp on

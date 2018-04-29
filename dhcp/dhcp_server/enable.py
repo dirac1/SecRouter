@@ -13,24 +13,9 @@ network= sys.argv[2]
 prefix = sys.argv[3]
 gateway= sys.argv[4]
 
-# -------------------------- comment function -----------------------------
-def comment(interface,input_file,text,do=True,comment_glyph='#'):
-    with fileinput.FileInput(input_file, inplace=True) as file:
-        for line in file:
-            if do:
-                print(line.replace(text,comment_glyph + text), end='')
-            else:
-                print(line.replace(comment_glyph + text,text), end='')
-
-# ----------- execute command and print the stout or stderr  ---------------
-def execute(cmd):
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
-    for stdout_line in iter(popen.stdout.readline, ""):
-        yield stdout_line
-    popen.stdout.close()
-    return_code = popen.wait()
-    if return_code:
-        raise subprocess.CalledProcessError(return_code, cmd)
+# functions
+from misc_rs import comment #check or write
+from misc_rs import execute # execute a command 
 
 # -------------------------- main -----------------------------
 def main(interface,network,prefix,gateway):
@@ -52,17 +37,6 @@ def main(interface,network,prefix,gateway):
             # comment dhcpcd to disable
             commentary='include \"/etc/dhcpcd.d/'+interface+'.conf\";'
             comment(interface,'/etc/dhcpcd.conf',commentary,False)
-
-            # comment interfaces.d/[interface] 
-            # TO MODIFY
-#            data = [ 'auto ' + interface \
-#                     , 'iface ' + interface + ' inet' + ' static' \
-#                     , 'address ' + gateway \
-#                     , 'netmask ' + netmask ]
-#            for value in data:
-#                comment(interface,'/etc/network/interfaces.d/'+interface,value,False)
-#        else:
-#            print('The configuration file doesn\'t exist')
 
      # Restart the dhcp server   
     for path in execute(['/etc/init.d/isc-dhcp-server','restart']):

@@ -1,9 +1,3 @@
 * Monitoring logs with logcheck
 
 * msmtp to send email notifications (logcheck)
-
-* iptables with GeoIP **DONE**
-
-* ipcalc **DONE**
-
-* tcpdump **DONE**

@@ -20,24 +20,9 @@ DNS_Server_2 = sys.argv[8]
 lease_time= sys.argv[9]
 Add_ARP = sys.argv[10]
 
-# -------------------------- check or write  -----------------------------
-# function to check if the file contain the value, if it isn't there the function will write it  
-def cow(file_dir,data):
-     with open(file_dir,'r+') as input_file:
-         lines = [line.strip().replace('\n','') for line in input_file.readlines()]
-         if data not in lines:
-            print("data not found")
-            input_file.write(data+'\n')
-
-# ----------- execute command and print the stout or stderr  -------------
-def execute(cmd):
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
-    for stdout_line in iter(popen.stdout.readline, ""):
-        yield stdout_line
-    popen.stdout.close()
-    return_code = popen.wait()
-    if return_code:
-        raise subprocess.CalledProcessError(return_code, cmd)
+# functions
+from misc_rs import cow # check or  write
+from misc_rs import execute # execute a command 
 
 # ---------------------------------- main --------------------------------
 def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_Server_1,DNS_Server_2,lease_time,Add_ARP):

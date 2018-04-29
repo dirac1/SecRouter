@@ -235,3 +235,5 @@ Firewall
 DHCP Server 
 -----------
 * Network and gateway values linked with ethernet and routing values for each interface (physical,vlan or bridge)
+
+REMEMBER TO TEST ALL THE SCRIPTS AGAIN BECAUSE OF THE FUNCTION MOVEMENT TO A NEW FILE
