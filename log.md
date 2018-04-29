@@ -210,7 +210,28 @@ SysAdmin
 * finished backup.py 
 * finished Adding backend configuration to the tools subsection
 
-**2018-04-24**
+**2018-04-25**
 
 SysAdmin
 --------
+
+* GUI Activities
+* Debugging backup_restore.py
+
+**2018-04-28**
+
+SysAdmin
+--------
+
+* Debugged and tested backup_restore.py
+* Added NTP Client to the Administration subcategory
+* Debugged Gui with backup_restore.py
+* Added name translation for Ping,traceroute,whois in Tools subcategory
+
+Firewall
+--------
+* Added upload file subcategory
+
+DHCP Server 
+-----------
+* Network and gateway values linked with ethernet and routing values for each interface (physical,vlan or bridge)

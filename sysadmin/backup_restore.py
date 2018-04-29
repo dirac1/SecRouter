@@ -84,8 +84,8 @@ def main(bor,filename):
         dhcpcd_d = os.listdir('/etc/dhcpcd.d')
         if dhcpcd_d != []:
             for value in dhcpcd_d:
-                if os.path.isfile( dhcpcd_d + value ):
-                    shutil.copy2(dhcpcd_d + value , backup_dir_dhcp+'/dhcpcd.d' )
+                if os.path.isfile( '/etc/dhcpcd.d/' + value ):
+                    shutil.copy2('/etc/dhcpcd.d/' + value , backup_dir_dhcp+'/dhcpcd.d' )
 
         # Ethernet & Routing
         if os.path.isfile( '/etc/network/secrouter.conf' ):
@@ -131,7 +131,7 @@ def main(bor,filename):
         dhcpcd_d = os.listdir('/etc/dhcpcd.d')
         if dhcpcd_d != []:
             for value in dhcpcd_d:
-                os.remove(dhcpcd_d+ '/' + files )
+                os.remove('/etc/dhcpcd.d/' + value )
 
         if os.path.isfile( '/etc/network/secrouter.conf' ):
             os.remove('/etc/network/secrouter.conf')
@@ -159,8 +159,8 @@ def main(bor,filename):
 
         dhcpcd_d = os.listdir('/home/secrouter/backup/'+filename+'/dhcp/dhcpcd.d')
         for value in dhcpcd_d:
-            if os.path.isfile( dhcpcd_d + value ):
-                shutil.copy2(dhcpcd_d + value , '/etc/dhcpcd.d' )
+            if os.path.isfile( backup_dir_dhcp + value ):
+                shutil.copy2( backup_dir_dhcp + value , '/etc/dhcpcd.d' )
 
         # Ethernet & Routing
         shutil.copy2('/home/secrouter/backup/'+filename+'/ethroute/secrouter.conf' , '/etc/network')

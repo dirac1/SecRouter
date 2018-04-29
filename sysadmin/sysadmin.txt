@@ -1,7 +1,6 @@
 ADMINISTRATION
 
  - Password Management -
-
 Old password		___________ 
 New password 		___________
 Repeat new password 	___________
