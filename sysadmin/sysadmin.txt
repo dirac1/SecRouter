@@ -26,9 +26,17 @@ Time __:__:__ (24h) [Set] -> $date --set hh:mm:ss && hwclock --systohc
 Time __:__:__ (24h) [Set] -> $date --set yyyy-mm-dd && hwclock --systohc
 timezone _____v { America/Caracas | ... } [set] -> $sudo cp /usr/share/[combobox] /etc/localtime 
 
+ - ntp client -
+
+Server 1 ________
+Server 2 ________
+
+[Enable/Disable] -> $python3 ~/sysadmin/ntp_client.py
+
+
 LOGGING
 
-_____v -> { DHCP | Firewall | DNS | Kernel | All }
+_____v -> { DHCP | Firewall | DNS | Kernel | All } [Interface Configuration] -> ifquery -a
 
 ------------------------------
 |                            |
@@ -106,6 +114,7 @@ Interface _______v -> { eth0 | eth1 | ...} (no loopback) -> -i [combobox]
 [] Dst. Address _______ -> n -dst host [line_text_ip]
 [] Src. Port	_______ -> n -src port [line_text_port]
 [] Dst. Port	_______ -> n -dst port [line_text_port]
-[] save to	_______ -> -w [line_text_save_to]
+   Save To	_______ -> -w [line_text_save_to]
+   Packets      _______ -> -c [line_text_packets]
 		
 		[Start/Stop] -> $tcpdump [options]

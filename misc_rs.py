@@ -3,7 +3,6 @@
 
 import sys
 import os
-import ipaddress
 import fileinput
 import subprocess
 
