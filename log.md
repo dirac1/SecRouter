@@ -222,7 +222,6 @@ SysAdmin
 
 SysAdmin
 --------
-
 * Debugged and tested backup_restore.py
 * Added NTP Client to the Administration subcategory
 * Debugged Gui with backup_restore.py
@@ -237,3 +236,33 @@ DHCP Server
 * Network and gateway values linked with ethernet and routing values for each interface (physical,vlan or bridge)
 
 **REMEMBER TO TEST ALL THE SCRIPTS AGAIN BECAUSE OF THE FUNCTION MOVEMENT TO A NEW FILE**
+
+**2018-04-30**
+
+SysAdmin
+--------
+* Planning password management in the module
+
+**2018-04-30**
+
+Secrouter
+---------
+* Creating init script
+
+**2018-05-02**
+
+SysAdmin
+--------
+* Module finished with documentation 
+
+Secrouter
+---------
+* merging Login window with main window
+
+**2018-05-03**
+
+Secrouter
+---------
+* merging Login window with main window
+* debugging init\_script.py
+* creating SME and SOHO configurations

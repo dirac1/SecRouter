@@ -1,13 +1,9 @@
 [NAME]
 ======
 
-[NAME] is an Engineering students from The University Of Carabobo in Venezuela to design a prototype security router for SMEs and SOHO considering to main topics:
+[NAME] is a prototype security router for SMEs and SOHO made by engineering students from The University Of Carabobo in Venezuela, applying, network dissagregation,and FOSS.
 
-* Network dissagregation,
-* and FOSS solutions.
-
-
-Based on this premises and using python as the main framework we achieved a functional GUI controller for Debian-Based Raspberry Pi B2 OS (Raspbian), Adding simplicitto the network facilities already embedded in the Linux Kernel with the next capabilities configurations:
+Based on this premises and using python as the main framework. We achieved a functional GUI controller for Debian-Based Raspberry Pi B2 OS (Raspbian), Adding simplicity to the network facilities already embedded in the Linux Kernel with the next capabilities:
 
 * Remote login using ssh with the module paramiko
 * Stateful Firewall using xtables
