@@ -266,3 +266,24 @@ Secrouter
 * merging Login window with main window
 * debugging init\_script.py
 * creating SME and SOHO configurations
+
+**2018-05-04**
+
+Secrouter
+---------
+* merged Login window with main window
+* debugguing init\_script.py
+* Fixed Issue with STATUS subcategory in SysAdmin
+* Fixing Saving data in GUI 
+
+Home & About
+------------
+* Created this subcategories and now are functional (Need to add the University and School Logo)
+
+DHCP Server 
+-----------
+* ToDo: Restart the device after configuring any DHCP Server Instance
+
+Login
+-----
+* Removed Public Key Authentication (Will be a future feature)

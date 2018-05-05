@@ -1,24 +1,28 @@
-MAIN
+Home
 ====
 
 [NAME] 
 
-date: 		 _______ -> date "+%D"
-time:		 _______ -> date "+%T" 
-
-hostname :	 _______ -> cat /etc/hostname 
-device:		 _______ -> dmesg | grep OF:
+hostname :	 _______ -> uname -n 
 architecture:	 _______ -> uname -m
-kernel: 	 _______ -> uname -rsv
+device:		 _______ -> dmesg | grep OF:
+kernel: 	 _______ -> uname -rs
 
 up time :	 _______ -> uptime -p
+
+Time & Date
+ _______ -> date "+%D"	 _______ -> date "+%T" 
+
+
+Available Physical interfaces: -> /sys/class/net
+ -----------------------
+|                       |
+|                       |
+| eth0 eth1 wlan0 eth24 |
+|                       |
+ -----------------------
 
 Active Modules
 DHCP Server [Active | Inactive ] -> sudo systemctl is-active isc-dhcp-server
 DNS	    [Active | Inactive ] -> sudo systemctl is-active bind9
 NTP         [Active | Inactive ] -> sudo systemctl is-active ntp
-
-Available Physical interfaces: -> /sys/class/net
-
-eth0 eth1 wlan0 eth3 eth24
-

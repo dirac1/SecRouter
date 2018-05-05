@@ -3,11 +3,9 @@ To-Do
 
 * Debug the init\_script.py
 
-* Create the Home category 
+* Fix the issue to save data in the GUI 
 
-* Create the About category 
-
-* Merge Login window with Main window
+* DHCP Reboot
 
 * Debug the GUI
 * Debug the GUI
