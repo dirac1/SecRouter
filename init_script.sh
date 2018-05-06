@@ -22,7 +22,7 @@ apt-get install wget curl git zip zsh vim tmux sudo htop iftop ipcalc ipython iw
 apt-get install build-essential libssl-dev libffi-dev python-dev -y
 
 # Networking packages
-printf "Downloading network packages\n=========="
+printf "Downloading network packages\n==========\n"
 apt-get install isc-dhcp-server isc-dhcp-client dnsutils bridge-utils vlan bind9 iptables traceroute ifupdown2 hostapd whois ntp -y
 
 # --- Ethernet & Routing ---
@@ -35,19 +35,18 @@ mkdir -v /etc/network/arp.d
 printf "source /etc/network/interfaces.d/*\nsource /etc/network/vlan.d/*\nsource /etc/network/bridge.d/*" > /etc/network/secrouter.conf
 cp /etc/network/interfaces /etc/network/interfaces.bak
 touch /etc/network/interfaces.d/eth0
-printf "auto eth0\n    iface eth0 inet dhcp" > /etc/network/interfaces.d/eth0
-printf "auto lo\n    iface lo inter loopback" > /etc/network/interfaces
+printf "auto eth0\n    iface eth0 inet dhcp\n" > /etc/network/interfaces.d/eth0
+printf "auto lo\n    iface lo inet loopback\n" > /etc/network/interfaces
 printf "source /etc/network/secrouter.conf\n" >> /etc/network/interfaces
 ifquery -a
 
 # ---Firewall ---
-printf "Configuring Firewall Module\n==========\n"
+printf "\nConfiguring Firewall Module\n==========\n"
 printf "net.ipv4.ip_forward = 1" > /etc/sysctl.conf
 sysctl -p /etc/sysctl.conf
 
 # xtables-addons Installation 
-printf "Configuring RPI kernel to add xtables-addons modules for the Firewall Module"
-printf "=========="
+printf "\nConfiguring RPI kernel to add xtables-addons modules for the Firewall Module\n==========\n"
 apt-get install rpi-update
 rpi-update 
 gcc --version | grep gcc
@@ -56,7 +55,7 @@ update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 50
 apt-get install libncurses5-dev bc -y
 /usr/bin/wget https://raw.githubusercontent.com/notro/rpi-source/master/rpi-source -O /usr/bin/rpi-source && sudo chmod +x /usr/bin/rpi-source && /usr/bin/rpi-source -q --tag-update
 rpi-source
-printf "if the version is different from listed up here you should install this one instead with this command:\n apt-get install gcc-X.X g++-X.X \n and then change it with:\n update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-X.X 50\nDone\nInstalling xtable-addons dependencies"
+printf "if the version is different from listed up here you should install this one instead with this command:\n apt-get install gcc-X.X g++-X.X \n and then change it with:\n update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-X.X 50\nDone\nInstalling xtable-addons dependencies\n"
 apt-get install libtext-csv-xs-perl geoip-database libgeoip1 iptables-dev -y
 cd /root || exit #Be Aware
 wget http://downloads.sourceforge.net/project/xtables-addons/Xtables-addons/xtables-addons-2.14.tar.xz
