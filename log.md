@@ -291,3 +291,10 @@ Secrouter
 * init\_script.py completely functional
 * Fixed saving issues  in GUI
 
+**2018-05-04**
+
+Secrouter
+---------
+* Debugging the GUI
+* aestethical polishing in the GUI
+* Fixed bugs in backup\_restore.py and ntp.py

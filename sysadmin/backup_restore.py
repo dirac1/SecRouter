@@ -122,8 +122,8 @@ def main(bor,filename):
 
         dhcpcd_d = os.listdir('/home/secrouter/backup/'+filename+'/dhcp/dhcpcd.d')
         for value in dhcpcd_d:
-            if os.path.isfile( backup_dir_dhcp + value ):
-                shutil.copy2( backup_dir_dhcp + value , '/etc/dhcpcd.d' )
+            if os.path.isfile( backup_dir_dhcp+ '/dhcpcd.d/' + value ):
+                shutil.copy2( backup_dir_dhcp+'/dhcpcd.d/' + value , '/etc/dhcpcd.d' )
 
         # Ethernet & Routing
         shutil.copy2('/home/secrouter/backup/'+filename+'/ethroute/secrouter.conf' , '/etc/network')
@@ -150,18 +150,17 @@ def main(bor,filename):
     # 5. Restart The services 
 
         # Restart Networking
-        for path in execute(['systemctl','restart','networking']):
-            print(path, end='')
-        print('-----------------------------------')
-        print('NEW ETHERNET & ROUTING CONFIGURATION:')
-        for path in execute(['ifquery','-a']):
-            print(path, end='')
-        print('-----------------------------------')
+#        for path in execute(['systemctl','restart','networking']):
+#            print(path, end='')
+#        print('-----------------------------------')
+#        print('NEW ETHERNET & ROUTING CONFIGURATION:')
+#        for path in execute(['ifquery','-a']):
+#            print(path, end='')
+#        print('-----------------------------------')
 
         # Restart Firewall
-        iptables_rules = open('/etc/iptables.rules', 'w')
-        p = subprocess.Popen(["iptables-restore"], stdout=iptables_rules)
-        iptables_rules.close()
+        for path in execute(['sh','/etc/network/if-pre-up.d/iptables']):
+            print(path, end="")
         print('-----------------------------------')
         print('NEW FILTER RULES:')
         for path in execute(["iptables",'-v','-L','-t', 'filter']):
@@ -174,15 +173,15 @@ def main(bor,filename):
         print('RESTARTING THE SYSTEM TO APPLY CHANGES')
 
         # Restart DHCP
-        print('-----------------------------------')
-        print('RESTARTING DHCP SERVER:')
-        for path in execute(["systemctl","restart","isc-dhcp-server"]):
-            print(path , end = '')
-        print('-----------------------------------')
+#        print('-----------------------------------')
+#        print('RESTARTING DHCP SERVER:')
+#        for path in execute(["systemctl","restart","isc-dhcp-server"]):
+#            print(path , end = '')
+#        print('-----------------------------------')
 
 
-#        for path in execute(['reboot']):
-#            print(path, end="")
+        for path in execute(['reboot']):
+            print(path, end="")
 
 main(bor,filename)
 

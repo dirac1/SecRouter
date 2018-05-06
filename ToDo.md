@@ -1,5 +1,5 @@
 To-Do
 =====
-* Debug the GUI
+* Create the two base configuration backups SOHO and SME
 
 * Create the GUI executable

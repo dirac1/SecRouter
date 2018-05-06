@@ -19,7 +19,7 @@ from misc_rs import execute # execute a command
 # ---------------------------------- main --------------------------------
 def main(server1,server2,server3,max_cache_size):
 
-    max_cache_size = int(max_cache_size)*math.pow(10,6)
+    max_cache_size = round(int(max_cache_size)*math.pow(10,6))
 
     data = [ 'acl allowed {', \
              'localhost;', \
@@ -29,7 +29,7 @@ def main(server1,server2,server3,max_cache_size):
              'recursion yes;', \
              'allow-query {allowed;};', \
              'forwarders {'+server1+';'+server2+';'+server3+';};', \
-             'max-cache-size '+max_cache_size+';', \
+             'max-cache-size '+str(max_cache_size)+';', \
              'forward only;', \
              'dnssec-enable yes;', \
              'dnssec-validation yes;', \
