@@ -1,7 +1,7 @@
-[NAME]
-======
+SecRouter
+=========
 
-[NAME] is a prototype security router for SMEs and SOHO made by engineering students from The University Of Carabobo in Venezuela, applying, network dissagregation,and FOSS.
+SecRouteris a prototype security router for SMEs and SOHO made by engineering students from The University Of Carabobo in Venezuela, applying, network dissagregation,and FOSS.
 
 Based on this premises and using python as the main framework. We achieved a functional GUI controller for Debian-Based Raspberry Pi B2 OS (Raspbian), Adding simplicity to the network facilities already embedded in the Linux Kernel with the next capabilities:
 
@@ -13,3 +13,8 @@ Based on this premises and using python as the main framework. We achieved a fun
 * DNS Caching and forwarding server
 * System administration module rich in network tools 
 * netdata as system monitoring tool
+
+Screenshots
+-----------
+
+![alt text](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
