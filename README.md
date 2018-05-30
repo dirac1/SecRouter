@@ -16,5 +16,11 @@ Based on this premises and using python as the main framework. We achieved a fun
 
 Screenshots
 -----------
-
-![alt text](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
+### Home
+![home](https://raw.githubusercontent.com/dirac1/SecRouter/master/screenshots/home.png)
+### Filter
+![filter](https://raw.githubusercontent.com/dirac1/SecRouter/master/screenshots/filter.png)
+### DHCP Server
+![dhcp-server](https://raw.githubusercontent.com/dirac1/SecRouter/master/screenshots/dhcp-server.png)
+### Tools
+![tools](https://raw.githubusercontent.com/dirac1/SecRouter/master/screenshots/tools.png)
