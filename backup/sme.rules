@@ -17,6 +17,8 @@
 # Accept HTTPS name resolve 
 -A INPUT -i eth0 -p tcp -m state --state ESTABLISHED -m tcp --sport 443 -j ACCEPT
 -A INPUT -i eth0 -p tcp -m state --state NEW,ESTABLISHED -m tcp --dport 443 -j ACCEPT
+# Allow port 19999/tcp for device monitoring via browser using netdata
+-A INPUT -p tcp -m tcp --dport 19999 -j ACCEPT
 # limit number of packages per minute 
 -A INPUT -m limit --limit 3/min -j LOG --log-prefix "iptables_INPUT_denied: "
 -A INPUT -j REJECT --reject-with icmp-port-unreachable
