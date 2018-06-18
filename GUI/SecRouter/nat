@@ -1,0 +1,850 @@
+
+
+# -------------------------------- FILTER ---------------------------------------
+
+    def apply_nat (self):
+         src_addr = ""
+         dst_addr = ""
+         iprange_match = ""
+         tcp_match = ""
+         udp_match = ""
+         icmp_type = ""
+         multi_match = ""
+         limit_match = ""
+         time_match = ""
+         state = ""
+         string_match = ""
+         ttl_match = ""
+         comment = ""
+         super_match = ""
+         def sma(value,salt,is_not):
+             salt = salt + ' '
+             return salt + value + ' '  if is_not == False else salt + '! ' + value + ' '
+     # ------------------------------- FILTER SUB-CATEGORY -------------------------------
+     # --- MATCHES ---
+         # IP match
+         ## Source Address
+         if self.nat_e_IP_Match.isChecked():
+
+            if self.nat_e_src_addr.isChecked():
+
+                 src_addr = self.nat_src_addr_line_edit.text()
+                 src_addr = sma(src_addr,'-s',self.nat_src_addr_not.isChecked())
+            else:
+                 src_addr = ''
+             ## Destination Address
+            if self.nat_e_dst_addr.isChecked():
+                 dst_addr = self.nat_dst_addr_line_edit.text()
+                 dst_addr = sma(dst_addr,'-d',self.nat_dst_addr_not.isChecked())
+            else:
+                 dst_addr = ''
+             ## iprange sub-match
+             ### Source Address Range
+            if self.nat_e_src_addr_range.isChecked() or self.nat_e_dst_addr_range.isChecked():
+                if self.nat_e_src_addr_range.isChecked():
+                     src_addr_range = self.nat_src_addr_range_line_edit.text()
+                     src_addr_range = sma(src_addr_range,'--src-range',self.nat_src_addr_range_not.isChecked())
+                else:
+                     src_addr_range = ''
+
+                 ### Destination Address Range
+                if self.nat_e_dst_addr_range.isChecked():
+                     dst_addr_range = self.nat_dst_addr_range_line_edit.text()
+                     dst_addr_range = sma(dst_addr_range,'--dst-range',self.nat_dst_addr_range_not.isChecked())
+                else:
+                     dst_addr_range = ''
+                iprange_match = '-m iprange ' + src_addr_range  + dst_addr_range
+            else:
+                iprange_match = ''
+
+
+         else:
+             ip_rule = ''
+
+         # IP match END
+
+         # Port match
+
+         ## TCP match
+         if self.nat_e_tcp_Match.isChecked():
+         ### Source Port
+             if self.nat_e_src_port_tcp.isChecked():
+                 src_port_tcp = self.nat_src_port_tcp_line_edit.text()
+                 src_port_tcp = sma(src_port_tcp,'--sport',self.nat_src_port_tcp_not.isChecked())
+             else:
+                 src_port_tcp = ''
+             ### Destination Port
+             if self.nat_e_dst_port_tcp.isChecked():
+                 dst_port_tcp = self.nat_dst_port_tcp_line_edit.text()
+                 dst_port_tcp = sma(dst_port_tcp,'--dport',self.nat_src_port_tcp_not.isChecked())
+             else:
+                 dst_port_tcp = ''
+             ### TCP Flag
+             if self.nat_e_tcp_flags.isChecked():
+                 tcp_flags = self.nat_tcp_flags_line_edit.text()
+                 tcp_flags = sma(tcp_flags,'--tcp-flags ',self.nat_tcp_flags_not.isChecked())
+             else:
+                 tcp_flags = ''
+
+             tcp_match = '-p tcp -m tcp ' + src_port_tcp  + dst_port_tcp + tcp_flags
+
+         else:
+             tcp_match = ''
+
+
+         ## UDP match
+         ### Source Port
+         if self.nat_e_udp_Match.isChecked():
+             if self.nat_e_src_port_udp.isChecked():
+                 src_port_udp = self.nat_src_port_udp_line_edit.text()
+                 src_port_udp = sma(src_port_udp,'--sport',self.nat_src_port_udp_not.isChecked())
+             else:
+                 src_port_udp = ''
+             ### Destination Port
+             if self.nat_e_dst_port_udp.isChecked():
+                 dst_port_udp = self.nat_dst_port_udp_line_edit.text()
+                 dst_port_udp = sma(dst_port_udp,'--dport',self.nat_dst_port_udp_not.isChecked())
+             else:
+                 dst_port_udp = ''
+
+             udp_match = '-p udp -m udp ' + src_port_udp  + dst_port_udp
+
+         ## icmp match
+         ### icmp type
+         if self.nat_e_icmp_type.isChecked():
+             icmp_type = self.nat_icmp_type_line_edit.text()
+             icmp_type = sma(icmp_type,'-p icmp -m icmp --icmp-type',self.nat_icmp_type_not.isChecked())
+         else:
+             icmp_type = ''
+
+         ## Multiport match
+         if self.nat_e_multi_port.isChecked():
+             if self.nat_e_src_port_multi.isChecked() or self.nat_e_dst_port_multi.isChecked():
+                 protocol = self.nat_protocol_combobox.currentText() + ' '
+             else:
+                QMessageBox.warning(self,"Advertencia","debe poseer algun puerto de destino u origen",QMessageBox.Ok)
+                self.nat_e_multi_port.Checked(False)
+             ### Source Port
+             if self.nat_e_src_port_multi.isChecked():
+                 src_port_multi = self.nat_src_port_multi_line_edit.text()
+                 src_port_multi = sma(src_port_multi,'--sport',self.nat_src_port_multi_not.isChecked())
+             else:
+                 src_port_multi = ''
+             ### Destination Port
+             if self.nat_e_dst_port_multi.isChecked():
+                 dst_port_multi = self.nat_dst_port_multi_line_edit.text()
+                 dst_port_multi = sma(dst_port_multi,'--dport',self.nat_dst_port_multi_not.isChecked())
+             else:
+                 dst_port_multi = ''
+
+             multi_match = '-p ' + protocol + '-m multiport ' +  src_port_multi  +  dst_port_multi
+         else:
+             multi_match = ''
+         ## Multiport match END
+         # Port match END
+
+         # State match
+         if self.nat_e_state.isChecked():
+             state = self.nat_state_line_edit.text()
+             state = sma(state,'-m state --state', self.nat_state_not.isChecked())
+         else:
+             state = ''
+         # State match END
+
+         # Limit match
+         ## Limit Rate
+         if self.nat_e_limit.isChecked():
+             if self.nat_e_limit_rate.isChecked():
+                 limit_rate = self.nat_limit_rate_line_edit.text()
+                 limit_rate ='--limit-rate ' + limit_rate + ' '
+             else:
+                 limit_rate = ''
+             ## Limit Burst
+             if self.nat_e_limit_burst.isChecked():
+                 limit_burst = self.nat_limit_burst_line_edit.text()
+                 limit_burst = 'limit-burst ' + limit_burst + ' '
+             else:
+                 limit_burst = ''
+
+             limit_match = '-m limit ' + limit_rate + limit_burst
+         else:
+             limit_match = ''
+         # Limit match END
+
+         if self.nat_e_time.isChecked():
+             # Date Start
+             if self.nat_e_date_start.isChecked():
+                 date_start = self.nat_date_start_line_edit.text()
+                 date_start = '--datestart ' + date_start + ' '
+             else:
+                 date_start = ''
+             # Date Stop
+             if self.nat_e_date_stop.isChecked():
+                 date_stop = self.nat_date_stop_line_edit.text()
+                 date_stop = '--datestop ' + date_stop + ' '
+             else:
+                 date_stop = ''
+
+             # Time Start
+             if self.nat_e_time_start.isChecked():
+                 time_start = self.nat_time_start_line_edit.text()
+                 time_start = '--timestart ' + time_start + ' '
+             else:
+                 time_start = ''
+             # Time Stop
+             if self.nat_e_time_stop.isChecked():
+                 time_stop = self.nat_time_stop_line_edit.text()
+                 time_stop = '--timestop ' + time_stop + ' '
+             else:
+                 time_stop = ''
+
+             # Month Days
+             if self.nat_e_month_days.isChecked():
+                 month_days = self.nat_month_days_line_edit.text()
+                 month_days = sma(month_days,'--monthdays',self.nat_month_days_not.isChecked())
+             else:
+                 month_days = ''
+             # Week Days
+             if self.nat_e_week_days.isChecked():
+                 week_days = self.nat_week_days_line_edit.text()
+                 week_days = sma(week_days,'--weekdays',self.nat_week_days_not.isChecked())
+             else:
+                 week_days = ''
+
+             time_match = '-m time '+ date_start  + date_stop + time_start + time_stop + month_days + week_days
+         else:
+             time_match = ''
+         # Time Match END
+         # String Match
+         if self.nat_e_string.isChecked():
+             # Algorithm
+             if self.nat_e_algo.isChecked():
+                 algo = '--algo ' + self.nat_algo_combobox.currentText() + ' '
+             else:
+                 algo = ''
+             # From
+             if self.nat_e_from_data.isChecked():
+                 from_data = self.nat_from_data_line_edit.text()
+                 from_data = '--from ' + from_data + ' '
+             else:
+                 from_data = ''
+
+             # To
+             if self.nat_e_to_data.isChecked():
+                 to_data = self.nat_to_data_line_edit.text()
+                 to_data = '--to ' + to_data + ' '
+             else:
+                 time_start = ''
+             # String
+             if self.nat_e_check_string.isChecked():
+                check_string = self.nat_check_string_line_edit.text()
+                check_string = sma(check_string,'--string',self.nat_check_string_not.isChecked())
+             else:
+                 check_string = ''
+
+             string_match = '-m string ' + algo + from_data  + to_data  + check_string
+         else:
+             string_match = ''
+
+         # String Match END
+
+        # TTL Match
+         # -m ttl --ttl-eq --ttl-gt --ttl-lt
+         if self.nat_e_ttl.isChecked():
+             ## TTL equal
+             if self.nat_e_ttl_eq.isChecked():
+                ttl_eq = self.nat_ttl_eq_line_edit.text()
+                ttl_eq = sma(ttl_eq,'--ttl-eq',self.nat_ttl_eq_not.isChecked())
+             else:
+                 ttl_eq  = ''
+             ## TTL greater than
+             if self.nat_e_ttl_gt.isChecked():
+                 ttl_gt = self.nat_ttl_gt_line_edit.text()
+                 ttl_gt = '--ttl-gt ' + ttl_gt + ' '
+             else:
+                 ttl_gt = ''
+             ## TTL less than
+             if self.nat_e_ttl_lt.isChecked():
+                 ttl_lt = self.nat_ttl_lt_line_edit.text()
+                 ttl_lt = '--ttl-lt ' + ttl_lt + ' '
+             else:
+                 ttl_lt = ''
+
+             ttl_match = '-m ttl '  +ttl_eq  + ttl_gt  + ttl_lt
+         else:
+             ttl_match = ''
+         # TTL Match END
+
+         # comment Match
+         if self.nat_e_comment.isChecked():
+            comment = self.nat_comment_line_edit.text()
+            comment = '-m comment --comment ' + '\'' +comment + '\'' + ' '
+         else:
+            comment  = ''
+
+
+          x = self.nat_action_combobox.currentText()
+
+          if x == "MASQUERADE" and self.nat_chain_combox.currentText() == "POSTROUTING":
+              action = '-j MASQUERADE '
+              if self.e_masquerade.isChecked():
+                  action = action + '--to-ports ' + masquerade.text()
+
+         if x == "REDIRECT" and (self.nat_chain_combox.currentText() == "PRETROUTING" or self.nat_chain_combox.currentText() == "POSTROUTING"):
+            action = '-j REDIRECT --to-ports ' + redirect.text()
+
+         if x == "SNAT" and (self.nat_chain_combox.currentText() == "INPUT" or self.nat_chain_combox.currentText() == "POSTROUTING"):
+            action = '-j SNAT --to-source ' + snat.text()
+
+         if x == "DNAT": # ONLY FOR OUTPUT AND  PREROUTING CHAIN
+              action = '-j DNAT --to-destination ' + redirect_to_ports_line_edit.text()
+
+         if x == "LOG":
+              action = '-j LOG --log-level' + self.log_combobox.currentText() + ' --log-prefix ' + self.prefix_line_edit.text()
+
+
+
+         if self.nat_chain_combox.currentText() == "INPUT" or self.nat_chain_combox.currentText() == "PREROUTING" :
+              out_if = ""
+              if self.nat_e_in.isChecked():
+                  if self.nat_in_not.isChecked():
+                      in_if = "-i " + '! '+ self.nat_in_combobox.currentText() + " "
+                  else:
+                      in_if = "-i " + self.nat_in_combobox.currentText() + " "
+              else:
+                  in_if =""
+
+         if self.nat_chain_combox.currentText() == "OUTPUT" or self.nat_chain_combox.currentText() == "POSTROUTING":
+              in_if == ""
+              if self.nat_e_out.isChecked():
+                  if self.nat_out_not.isChecked():
+                      out_if = "-i " + '! '+ self.nat_out_combobox.currentText() + " "
+                  else:
+                      out_if = "-i " + nat_out_combobox.currentText() + " "
+              else:
+                  out_if =""
+
+
+
+         # General definition of matches
+         if self.nat_e_comment.isChecked()  or self.nat_e_ttl.isChecked()  or self.nat_e_string.isChecked() or  self.nat_e_time.isChecked() or self.nat_e_limit.isChecked() or self.nat_e_state.isChecked() or self.nat_e_tcp_Match.isChecked() or self.nat_e_multi_port.isChecked() or self.nat_e_udp_Match.isChecked() or self.nat_e_icmp_type.isChecked() or self.nat_e_IP_Match.isChecked():
+             super_match = src_addr  + dst_addr + iprange_match + tcp_match  + udp_match + icmp_type
+             super_match = super_match  + multi_match  +limit_match+ time_match + state + string_match + ttl_match
+             super_match = super_match  + comment
+             rule = var_rule + in_if + out_if + super_match + action
+
+         print(rule)
+         w = self.nat_chain_combox.currentText()
+         print(str(rule) + ' ' + str(w))
+         tdin, stdout, stderr = ssh_cliente.exec_command("sudo python3 /home/secrouter/firewall/firewall_controller.py " + '\'' + str(rule) + '\'' +  ' ' +  '\'' + str(w) + '\'' )
+         x = stderr.readlines()
+         y = stdout.readlines()
+         print(x)
+         print(y)
+
+    def change_chain_nat(self):
+
+        if self.nat_chain_combox.currentText() == "INPUT" or self.nat_chain_combox.currentText() == "PREROUTING":
+            self.nat_e_in.setEnabled(True)
+            self.nat_e_out.setEnabled(False)
+        if self.nat_chain_combox.currentText() == "OUTPUT" or self.nat_chain_combox.currentText() == "POSTROUTING":
+            self.nat_e_out.setEnabled(True)
+            self.nat_e_in.setEnabled(False)
+
+
+    def check_in_out_nat(self):
+        if self.nat_e_in.isChecked():
+            self.nat_in_not.setEnabled(True)
+            self.nat_in_combobox.setEnabled(True)
+        else:
+            self.nat_in_not.setEnabled(False)
+            self.nat_in_combobox.setEnabled(False)
+
+        if self.nat_e_out.isChecked():
+            self.nat_out_not.setEnabled(True)
+            self.nat_out_combobox.setEnabled(True)
+        else:
+            self.nat_out_not.setEnabled(False)
+            self.nat_out_combobox.setEnabled(False)
+
+    def change_rule_nat(self):
+
+        if self.nat_rule_combobox.currentText() == "ADD in line":
+            self.nat_rule_line_edit.setEnabled(True)
+        else:
+            self.nat_rule_line_edit.setEnabled(False)
+
+    def change_action_nat(self):
+        if self.nat_action_combobox.currentText() == "SNAT" and (self.nat_chain_combox.currentText() == "INPUT" or self.nat_chain_combox.currentText() == "POSTROUTING"):
+            self.snat.setEnabled(True)
+        else:
+            self.snat.setEnabled(False)
+
+        if self.nat_action_combobox.currentText() == "DNAT" and self.nat_chain_combox.currentText() == "POSTROUTING":
+            self.dnat.setEnabled(True)
+        else:
+            self.dnat.setEnabled(False)
+
+        if self.nat_action_combobox.currentText() == "DNAT" and (self.nat_chain_combox.currentText() == "outPUT" or self.nat_chain_combox.currentText() == "PREROUTING"):
+            self.nat_log_combobox.setEnabled(True)
+            self.nat_prefix_line_edit.setEnabled(True)
+        else:
+            self.nat_log_combobox.setEnabled(False)
+            self.nat_prefix_line_edit.setEnabled(False)
+
+        if self.nat_action_combobox.currentText() == "MASQUERADE" and self.nat_chain_combox.currentText() == "POSTROUTING":
+            self.e_masquerade.setEnabled(True)
+        else:
+            self.e_masquerade.setEnabled(False)
+
+        if self.nat_action_combobox.currentText() == "REDIRECT"and (self.nat_chain_combox.currentText() == "PRETROUTING" or self.nat_chain_combox.currentText() == "POSTROUTING"):
+            self.redirect.setEnabled(True)
+        else:
+            self.redirect.setEnabled(False)
+
+    def change_masquerade(self):
+        if self.e_masquerade.isChecked():
+            self.masquerade.setEnabled(True)
+        else:
+            self.masquerade.setEnabled(False)
+
+    def change_ip_nat(self):
+        if self.nat_e_IP_Match.isChecked():
+            self.nat_e_src_addr.setEnabled(True)
+            self.nat_e_dst_addr.setEnabled(True)
+            self.nat_e_src_addr_range.setEnabled(True)
+            self.nat_e_dst_addr_range.setEnabled(True)
+
+            if self.nat_e_src_addr.isChecked():
+                self.nat_src_addr_not.setEnabled(True)
+                self.nat_src_addr_line_edit.setEnabled(True)
+            else:
+                self.nat_src_addr_not.setEnabled(False)
+                self.nat_src_addr_line_edit.setEnabled(False)
+
+            if self.nat_e_dst_addr.isChecked():
+                self.nat_dst_addr_not.setEnabled(True)
+                self.nat_dst_addr_line_edit.setEnabled(True)
+            else:
+                self.nat_dst_addr_not.setEnabled(False)
+                self.nat_dst_addr_line_edit.setEnabled(False)
+
+            if self.nat_e_src_addr_range.isChecked():
+                self.nat_src_addr_range_not.setEnabled(True)
+                self.nat_src_addr_range_line_edit.setEnabled(True)
+            else:
+                self.nat_src_addr_range_not.setEnabled(False)
+                self.nat_src_addr_range_line_edit.setEnabled(False)
+
+            if self.nat_e_dst_addr_range.isChecked():
+                self.nat_dst_addr_range_not.setEnabled(True)
+                self.nat_dst_addr_range_line_edit.setEnabled(True)
+            else:
+                self.nat_dst_addr_range_not.setEnabled(False)
+                self.nat_dst_addr_range_line_edit.setEnabled(False)
+        else:
+            self.nat_e_src_addr.setEnabled(False)
+            self.nat_e_dst_addr.setEnabled(False)
+            self.nat_e_src_addr_range.setEnabled(False)
+            self.nat_e_dst_addr_range.setEnabled(False)
+            self.nat_src_addr_not.setEnabled(False)
+            self.nat_src_addr_line_edit.setEnabled(False)
+            self.nat_dst_addr_not.setEnabled(False)
+            self.nat_dst_addr_line_edit.setEnabled(False)
+            self.nat_src_addr_range_not.setEnabled(False)
+            self.nat_src_addr_range_line_edit.setEnabled(False)
+            self.nat_dst_addr_range_not.setEnabled(False)
+            self.nat_dst_addr_range_line_edit.setEnabled(False)
+
+    def change_port_nat(self):
+        if self.nat_e_tcp_Match.isChecked():
+            self.nat_e_src_port_tcp.setEnabled(True)
+            self.nat_e_dst_port_tcp.setEnabled(True)
+            self.nat_e_tcp_flags.setEnabled(True)
+
+            if self.nat_e_src_port_tcp.isChecked():
+                self.nat_src_port_tcp_not.setEnabled(True)
+                self.nat_src_port_tcp_line_edit.setEnabled(True)
+            else:
+                self.nat_src_port_tcp_not.setEnabled(False)
+                self.nat_src_port_tcp_line_edit.setEnabled(False)
+
+            if self.nat_e_dst_port_tcp.isChecked():
+                self.nat_dst_port_tcp_not.setEnabled(True)
+                self.nat_dst_port_tcp_line_edit.setEnabled(True)
+            else:
+                self.nat_dst_port_tcp_not.setEnabled(False)
+                self.nat_dst_port_tcp_line_edit.setEnabled(False)
+
+            if self.nat_e_tcp_flags.isChecked():
+                self.nat_tcp_flags_not.setEnabled(True)
+                self.nat_tcp_flags_line_edit.setEnabled(True)
+            else:
+                self.nat_tcp_flags_not.setEnabled(False)
+                self.nat_tcp_flags_line_edit.setEnabled(False)
+        else:
+            self.nat_e_src_port_tcp.setEnabled(False)
+            self.nat_e_dst_port_tcp.setEnabled(False)
+            self.nat_e_tcp_flags.setEnabled(False)
+            self.nat_src_port_tcp_not.setEnabled(False)
+            self.nat_src_port_tcp_line_edit.setEnabled(False)
+            self.nat_dst_port_tcp_not.setEnabled(False)
+            self.nat_dst_port_tcp_line_edit.setEnabled(False)
+            self.nat_tcp_flags_not.setEnabled(False)
+            self.nat_tcp_flags_line_edit.setEnabled(False)
+
+    def change_udp_nat(self):
+        if self.nat_e_udp_Match.isChecked():
+            self.nat_e_src_port_udp.setEnabled(True)
+            self.nat_e_dst_port_udp.setEnabled(True)
+
+            if self.nat_e_src_port_udp.isChecked():
+                self.nat_src_port_udp_not.setEnabled(True)
+                self.nat_src_port_udp_line_edit.setEnabled(True)
+            else:
+                self.nat_src_port_udp_not.setEnabled(False)
+                self.nat_src_port_udp_line_edit.setEnabled(False)
+
+            if self.nat_e_dst_port_udp.isChecked():
+                self.nat_dst_port_udp_not.setEnabled(True)
+                self.nat_dst_port_udp_line_edit.setEnabled(True)
+            else:
+                self.nat_dst_port_udp_not.setEnabled(False)
+                self.nat_dst_port_udp_line_edit.setEnabled(False)
+        else:
+            self.nat_e_src_port_udp.setEnabled(False)
+            self.nat_e_dst_port_udp.setEnabled(False)
+            self.nat_src_port_udp_not.setEnabled(False)
+            self.nat_src_port_udp_line_edit.setEnabled(False)
+            self.nat_dst_port_udp_not.setEnabled(False)
+            self.nat_dst_port_udp_line_edit.setEnabled(False)
+
+    def change_icmp_nat(self):
+        if self.nat_e_icmp_type.isChecked():
+            self.nat_icmp_type_not.setEnabled(True)
+            self.nat_icmp_type_line_edit.setEnabled(True)
+        else:
+            self.nat_icmp_type_not.setEnabled(False)
+            self.nat_icmp_type_line_edit.setEnabled(False)
+
+    def change_multiport_nat(self):
+        if self.nat_e_multi_port.isChecked():
+            self.nat_e_src_port_multi.setEnabled(True)
+            self.nat_e_dst_port_multi.setEnabled(True)
+            self.nat_protocol_combobox.setEnabled(True)
+            self.nat_protocol_not.setEnabled(True)
+
+            if self.nat_e_src_port_multi.isChecked():
+                self.nat_src_port_multi_not.setEnabled(True)
+                self.nat_src_port_multi_line_edit.setEnabled(True)
+            else:
+                self.nat_src_port_multi_not.setEnabled(False)
+                self.nat_src_port_multi_line_edit.setEnabled(False)
+
+            if self.nat_e_dst_port_multi.isChecked():
+                self.nat_dst_port_multi_not.setEnabled(True)
+                self.nat_dst_port_multi_line_edit.setEnabled(True)
+            else:
+                self.nat_dst_port_multi_not.setEnabled(False)
+                self.nat_dst_port_multi_line_edit.setEnabled(False)
+        else:
+            self.nat_e_src_port_multi.setEnabled(False)
+            self.nat_e_dst_port_multi.setEnabled(False)
+            self.nat_protocol_combobox.setEnabled(False)
+            self.nat_protocol_not.setEnabled(False)
+            self.nat_src_port_multi_not.setEnabled(False)
+            self.nat_src_port_multi_line_edit.setEnabled(False)
+            self.nat_dst_port_multi_not.setEnabled(False)
+            self.nat_dst_port_multi_line_edit.setEnabled(False)
+
+    def change_state_nat(self):
+
+        if self.nat_e_state.isChecked():
+            self.nat_state_not.setEnabled(True)
+            self.nat_state_line_edit.setEnabled(True)
+        else:
+            self.nat_state_not.setEnabled(False)
+            self.nat_state_line_edit.setEnabled(False)
+
+    def change_limit_nat(self):
+        if self.nat_e_limit.isChecked():
+            self.nat_e_limit_rate.setEnabled(True)
+            self.nat_e_limit_burst.setEnabled(True)
+
+            if self.nat_e_limit_rate.isChecked():
+                self.nat_limit_rate_line_edit.setEnabled(True)
+            else:
+                self.nat_limit_rate_line_edit.setEnabled(False)
+
+            if self.nat_e_limit_burst.isChecked():
+                self.nat_limit_burst_line_edit.setEnabled(True)
+            else:
+                self.nat_limit_burst_line_edit.setEnabled(False)
+
+        else:
+            self.nat_e_limit_rate.setEnabled(False)
+            self.nat_e_limit_burst.setEnabled(False)
+            self.nat_limit_rate_line_edit.setEnabled(False)
+            self.nat_limit_burst_line_edit.setEnabled(False)
+
+    def change_time_nat(self):
+
+        if self.nat_e_time.isChecked():
+            self.nat_e_date_start.setEnabled(True)
+            self.nat_e_date_stop.setEnabled(True)
+            self.nat_e_time_start.setEnabled(True)
+            self.nat_e_time_stop.setEnabled(True)
+            self.nat_e_month_days.setEnabled(True)
+            self.nat_e_week_days.setEnabled(True)
+
+            if self.nat_e_date_start.isChecked():
+                self.nat_date_start_line_edit.setEnabled(True)
+            else:
+                self.nat_date_start_line_edit.setEnabled(False)
+
+            if self.nat_e_date_stop.isChecked():
+                self.nat_date_stop_line_edit.setEnabled(True)
+            else:
+                self.nat_date_stop_line_edit.setEnabled(False)
+
+            if self.nat_e_time_start.isChecked():
+                self.nat_time_start_line_edit.setEnabled(True)
+            else:
+                self.nat_time_start_line_edit.setEnabled(False)
+
+            if self.nat_e_time_stop.isChecked():
+                self.nat_time_stop_line_edit.setEnabled(True)
+            else:
+                self.nat_time_stop_line_edit.setEnabled(False)
+
+            if self.nat_e_month_days.isChecked():
+                self.nat_month_days_not.setEnabled(True)
+                self.nat_month_days_line_edit.setEnabled(True)
+            else:
+                self.nat_month_days_not.setEnabled(False)
+                self.nat_month_days_line_edit.setEnabled(False)
+
+            if self.nat_e_week_days.isChecked():
+                self.nat_week_days_not.setEnabled(True)
+                self.nat_week_days_line_edit.setEnabled(True)
+            else:
+                self.nat_week_days_not.setEnabled(False)
+                self.nat_week_days_line_edit.setEnabled(False)
+        else:
+            self.nat_e_date_start.setEnabled(False)
+            self.nat_e_date_stop.setEnabled(False)
+            self.nat_e_time_start.setEnabled(False)
+            self.nat_e_time_stop.setEnabled(False)
+            self.nat_e_month_days.setEnabled(False)
+            self.nat_e_week_days.setEnabled(False)
+            self.nat_date_start_line_edit.setEnabled(False)
+            self.nat_date_stop_line_edit.setEnabled(False)
+            self.nat_time_start_line_edit.setEnabled(False)
+            self.nat_time_stop_line_edit.setEnabled(False)
+            self.nat_month_days_not.setEnabled(False)
+            self.nat_month_days_line_edit.setEnabled(False)
+            self.nat_week_days_not.setEnabled(False)
+            self.nat_week_days_line_edit.setEnabled(False)
+
+    def change_string_nat(self):
+        if self.nat_e_string.isChecked():
+            self.nat_e_algo.setEnabled(True)
+            self.nat_e_from_data.setEnabled(True)
+            self.nat_e_to_data.setEnabled(True)
+            self.nat_e_check_string.setEnabled(True)
+
+            if self.nat_e_algo.isChecked():
+                self.nat_algo_combobox.setEnabled(True)
+            else:
+                self.nat_algo_combobox.setEnabled(False)
+
+            if self.nat_e_from_data.isChecked():
+                self.nat_from_data_line_edit.setEnabled(True)
+            else:
+                self.nat_from_data_line_edit.setEnabled(False)
+
+            if self.nat_e_to_data.isChecked():
+                self.nat_to_data_line_edit.setEnabled(True)
+            else:
+                self.nat_to_data_line_edit.setEnabled(False)
+
+            if self.nat_e_check_string.isChecked():
+                self.nat_check_string_not.setEnabled(True)
+                self.nat_check_string_line_edit.setEnabled(True)
+            else:
+                self.nat_check_string_not.setEnabled(False)
+                self.nat_check_string_line_edit.setEnabled(False)
+
+        else:
+            self.nat_nat_e_algo.setEnabled(False)
+            self.nat_e_from_data.setEnabled(False)
+            self.nat_e_to_data.setEnabled(False)
+            self.nat_e_check_string.setEnabled(False)
+            self.nat_algo_combobox.setEnabled(False)
+            self.nat_from_data_line_edit.setEnabled(False)
+            self.nat_to_data_line_edit.setEnabled(False)
+            self.nat_check_string_not.setEnabled(False)
+            self.nat_check_string_line_edit.setEnabled(False)
+
+    def change_ttl_nat(self):
+        if self.nat_e_ttl.isChecked():
+            self.nat_e_ttl_eq.setEnabled(True)
+            self.nat_e_ttl_gt.setEnabled(True)
+            self.nat_e_ttl_lt.setEnabled(True)
+
+            if self.nat_e_ttl_eq.isChecked():
+                self.nat_ttl_eq_not.setEnabled(True)
+                self.nat_ttl_eq_line_edit.setEnabled(True)
+            else:
+                self.nat_ttl_eq_not.setEnabled(False)
+                self.nat_ttl_eq_line_edit.setEnabled(False)
+
+            if self.nat_e_ttl_gt.isChecked():
+                self.nat_ttl_gt_line_edit.setEnabled(True)
+            else:
+                self.nat_ttl_gt_line_edit.setEnabled(False)
+
+            if self.nat_e_ttl_lt.isChecked():
+                self.nat_ttl_lt_line_edit.setEnabled(True)
+            else:
+                self.nat_ttl_lt_line_edit.setEnabled(False)
+
+        else:
+            self.nat_e_ttl_eq.setEnabled(False)
+            self.nat_e_ttl_gt.setEnabled(False)
+            self.nat_e_ttl_lt.setEnabled(False)
+            self.nat_ttl_eq_not.setEnabled(False)
+            self.nat_ttl_eq_not.setEnabled(False)
+            self.nat_ttl_eq_line_edit.setEnabled(False)
+            self.nat_ttl_gt_line_edit.setEnabled(False)
+            self.nat_ttl_lt_line_edit.setEnabled(False)
+
+    def change_comment_nat(self):
+        if self.nat_e_comment.isChecked():
+            self.nat_comment_line_edit.setEnabled(True)
+        else:
+            self.nat_comment_line_edit.setEnabled(False)
+            #aqui
+
+
+
+#################################### NAT ########################################\
+        self.nat_apply_filter_button.clicked.connect(self.apply_filter_nat)
+        self.nat_add_main.clicked.connect(self.Add_main_nat)
+        self.nat_delete_main.clicked.connect( self.Delete_main_nat)
+        self.nat_apply_main.clicked.connect(self.delete_rule_nat)
+        self.nat_apply_policy.clicked.connect(self.policy_nat)
+        self.nat_view_main.clicked.connect(self.view_rule_nat)
+        self.nat_flush_main.clicked.connect(self.flush_nat)
+        self.nat_table_comboBox.currentIndexChanged.connect(self.rule_nat)
+        self.nat_chain_combox.currentIndexChanged.connect(self.change_chain_filter_nat)
+        self.nat_e_in.clicked.connect(self.check_in_out_filter_nat)
+        self.nat_e_out.clicked.connect(self.check_in_out_filter_nat)
+        self.nat_rule_combobox.currentIndexChanged.connect(self.change_rule_nat)
+        self.nat_action_combobox.currentIndexChanged.connect(self.change_action_nat)
+        self.nat_e_IP_Match.clicked.connect(self.change_ip_nat)
+        self.nat_e_src_addr.clicked.connect(self.change_ip_nat)
+        self.nat_e_dst_addr.clicked.connect(self.change_ip_nat)
+        self.nat_e_src_addr_range.clicked.connect(self.change_ip_nat)
+        self.nat_e_dst_addr_range.clicked.connect(self.change_ip_nat)
+        self.nat_e_tcp_Match.clicked.connect(self.change_port_nat)
+        self.nat_e_src_port_tcp.clicked.connect(self.change_port_nat)
+        self.nat_e_dst_port_tcp.clicked.connect(self.change_port_nat)
+        self.nat_e_tcp_flags.clicked.connect(self.change_port_nat)
+        self.nat_e_udp_Match.clicked.connect(self.change_udp_nat)
+        self.nat_e_src_port_udp.clicked.connect(self.change_udp_nat)
+        self.nat_e_dst_port_udp.clicked.connect(self.change_udp_nat)
+        self.nat_e_icmp_type.clicked.connect(self.change_icmp_nat)
+        self.nat_e_multi_port.clicked.connect(self.change_multiport_nat)
+        self.nat_e_src_port_multi.clicked.connect(self.change_multiport_nat)
+        self.nat_e_dst_port_multi.clicked.connect(self.change_multiport_nat)
+        self.nat_e_state.clicked.connect(self.change_state_nat)
+        self.nat_e_limit.clicked.connect(self.change_limit_nat)
+        self.nat_e_limit_rate.clicked.connect(self.change_limit_nat)
+        self.nat_e_limit_burst.clicked.connect(self.change_limit_nat)
+        self.nat_e_time.clicked.connect(self.change_time_nat)
+        self.nat_e_date_start.clicked.connect(self.change_time_nat)
+        self.nat_e_date_stop.clicked.connect(self.change_time_nat_nat)
+        self.nat_e_time_start.clicked.connect(self.change_time_nat)
+        self.nat_e_time_stop.clicked.connect(self.change_time_nat)
+        self.nat_e_month_days.clicked.connect(self.change_time_nat)
+        self.nat_e_week_days.clicked.connect(self.change_time_nat)
+        self.nat_e_string.clicked.connect(self.change_string_nat)
+        self.nat_e_algo.clicked.connect(self.change_string_nat)
+        self.nat_e_from_data.clicked.connect(self.change_string_nat)
+        self.nat_e_to_data.clicked.connect(self.change_string_nat)
+        self.nat_e_check_string.clicked.connect(self.change_string_nat)
+        self.nat_e_ttl.clicked.connect(self.change_ttl_nat)
+        self.nat_e_ttl_eq.clicked.connect(self.change_ttl_nat)
+        self.nat_e_ttl_gt.clicked.connect(self.change_ttl_nat)
+        self.nat_e_ttl_lt.clicked.connect(self.change_ttl_nat)
+        self.nat_e_comment.clicked.connect(self.change_comment_nat)
+        self.e_masquerade.clicked.connect(self.change_masquerade)
+
+
+
+        self.nat_dst_addr_range_not.setEnabled(False)
+        self.nat_dst_addr_range_line_edit.setEnabled(False)
+        self.nat_e_src_port_tcp.setEnabled(False)
+        self.nat_e_dst_port_tcp.setEnabled(False)
+        self.nat_e_tcp_flags.setEnabled(False)
+        self.nat_src_port_tcp_not.setEnabled(False)
+        self.nat_src_port_tcp_line_edit.setEnabled(False)
+        self.nat_dst_port_tcp_not.setEnabled(False)
+        self.nat_dst_port_tcp_line_edit.setEnabled(False)
+        self.nat_tcp_flags_not.setEnabled(False)
+        self.nat_tcp_flags_line_edit.setEnabled(False)
+        self.nat_e_src_port_udp.setEnabled(False)
+        self.nat_e_dst_port_udp.setEnabled(False)
+        self.nat_src_port_udp_not.setEnabled(False)
+        self.nat_src_port_udp_line_edit.setEnabled(False)
+        self.nat_dst_port_udp_not.setEnabled(False)
+        self.nat_dst_port_udp_line_edit.setEnabled(False)
+        self.nat_icmp_type_not.setEnabled(False)
+        self.nat_icmp_type_line_edit.setEnabled(False)
+        self.nat_e_src_port_multi.setEnabled(False)
+        self.nat_e_dst_port_multi.setEnabled(False)
+        self.nat_protocol_combobox.setEnabled(False)
+        self.nat_protocol_not.setEnabled(False)
+        self.nat_src_port_multi_not.setEnabled(False)
+        self.nat_src_port_multi_line_edit.setEnabled(False)
+        self.nat_dst_port_multi_not.setEnabled(False)
+        self.nat_dst_port_multi_line_edit.setEnabled(False)
+        self.nat_state_not.setEnabled(False)
+        self.nat_state_line_edit.setEnabled(False)
+        self.nat_e_limit_rate.setEnabled(False)
+        self.nat_e_limit_burst.setEnabled(False)
+        self.nat_limit_rate_line_edit.setEnabled(False)
+        self.nat_limit_burst_line_edit.setEnabled(False)
+        self.nat_e_date_start.setEnabled(False)
+        self.nat_e_date_stop.setEnabled(False)
+        self.nat_e_time_start.setEnabled(False)
+        self.nat_e_time_stop.setEnabled(False)
+        self.nat_e_month_days.setEnabled(False)
+        self.nat_e_week_days.setEnabled(False)
+        self.nat_date_start_line_edit.setEnabled(False)
+        self.nat_date_stop_line_edit.setEnabled(False)
+        self.nat_time_start_line_edit.setEnabled(False)
+        self.nat_time_stop_line_edit.setEnabled(False)
+        self.nat_month_days_not.setEnabled(False)
+        self.nat_month_days_line_edit.setEnabled(False)
+        self.nat_week_days_not.setEnabled(False)
+        self.nat_week_days_line_edit.setEnabled(False)
+        self.nat_e_algo.setEnabled(False)
+        self.nat_e_from_data.setEnabled(False)
+        self.nat_e_to_data.setEnabled(False)
+        self.nat_e_check_string.setEnabled(False)
+        self.nat_algo_combobox.setEnabled(False)
+        self.nat_from_data_line_edit.setEnabled(False)
+        self.nat_to_data_line_edit.setEnabled(False)
+        self.nat_check_string_not.setEnabled(False)
+        self.nat_check_string_line_edit.setEnabled(False)
+        self.nat_e_ttl_eq.setEnabled(False)
+        self.nat_e_ttl_gt.setEnabled(False)
+        self.nat_e_ttl_lt.setEnabled(False)
+        self.nat_ttl_eq_not.setEnabled(False)
+        self.nat_ttl_eq_not.setEnabled(False)
+        self.nat_ttl_gt_line_edit.setEnabled(False)
+        self.nat_ttl_lt_line_edit.setEnabled(False)
+        self.nat_ttl_eq_line_edit.setEnabled(False)
+        self.nat_comment_line_edit.setEnabled(False)

@@ -1,0 +1,1 @@
+Bridge.br0,Enable,br0,eth1,on, 192.168.2.0, 27, 192.168.2.1, 192.168.2.1,static

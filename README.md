@@ -14,6 +14,11 @@ Based on these premises and using python as the main framework. We achieved a fu
 * System administration module rich in network tools
 * netdata as system monitoring tool
 
+Install
+-------
+
+
+
 ---
 ### Es:
 SecRouter es un enrutador de seguridad prototipo para pequeñas y medianas empresas hecho por estudiantes de ingeniería de la Universidad de Carabobo en Venezuela, aplicando los conceptos de desagregación de redes y el Software libre.
@@ -28,9 +33,23 @@ Basado en estas premisas y utilizando Python como infraestructura principal, Nos
 * Un modulo especializado para la administración del sistema, rico en herramientas de redes
 * Sistema de monitoreo gracias a la herramienta web netdata
 
+Instalación
+-----------
+1. Descargue el repositorio e instale los scripts en el raspberryPI limpio
+> git clone https://github.com/dirac1/SecRouter.git
+> cd SecRouter
+> scp init_script.sh \[Raspberry IP in your LAN\]:/home/pi
+> ssh pi@\[raspberry IP in your LAN\]
+> sudo sh init_script.sh
+2. Este procedimiento puede durar varios minutos dependiendo de su conexión al Internet
+3. Luego de que la instalación haya culminado exitosamente el dispositivo estará listo para ser utilizado
 
-Install
--------
+Instalación Controlador (Windows)
+---------------------------------
+1. Dentro de la carpeta GUI del repositorio SecRouter se encuentra una carpeta con el nombre SecRouter en donde se encuentra el controlador, para mayor comodidad colóquelo dentro del directorio "archivos de programas" de su sistema y genere un acceso director del ejecutables "start.exe" por donde podrá acceder directamente a la aplicación
+2. Luego de entrar al controlador, la clave y usuario por defecto del dispositivo serán
+	* user: secrouter
+	* password: routersec
 
 Screenshots
 -----------

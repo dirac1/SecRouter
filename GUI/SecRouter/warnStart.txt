@@ -1,0 +1,49 @@
+missing module named 'multiprocessing.forking' - imported by c:\users\lopez\appdata\local\programs\python\python36-32\lib\site-packages\PyInstaller\loader\rthooks\pyi_rth_multiprocessing.py
+missing module named multiprocessing.get_context - imported by multiprocessing, multiprocessing.pool, multiprocessing.managers, multiprocessing.sharedctypes
+missing module named multiprocessing.TimeoutError - imported by multiprocessing, multiprocessing.pool
+missing module named multiprocessing.BufferTooShort - imported by multiprocessing, multiprocessing.connection
+missing module named multiprocessing.AuthenticationError - imported by multiprocessing, multiprocessing.connection
+missing module named multiprocessing.set_start_method - imported by multiprocessing, multiprocessing.spawn
+missing module named multiprocessing.get_start_method - imported by multiprocessing, multiprocessing.spawn
+missing module named 'win32com.gen_py' - imported by win32com, c:\users\lopez\appdata\local\programs\python\python36-32\lib\site-packages\PyInstaller\loader\rthooks\pyi_rth_win32comgenpy.py
+missing module named pyimod03_importers - imported by c:\users\lopez\appdata\local\programs\python\python36-32\lib\site-packages\PyInstaller\loader\rthooks\pyi_rth_pkgres.py
+missing module named 'com.sun' - imported by pkg_resources._vendor.appdirs
+missing module named com - imported by pkg_resources._vendor.appdirs
+missing module named __builtin__ - imported by paramiko.py3compat, pkg_resources._vendor.pyparsing
+missing module named ordereddict - imported by pkg_resources._vendor.pyparsing
+missing module named 'pkg_resources.extern.pyparsing' - imported by pkg_resources._vendor.packaging.requirements, pkg_resources._vendor.packaging.markers
+missing module named StringIO - imported by six, PyQt5.uic.port_v2.string_io, pkg_resources._vendor.six
+missing module named __main__ - imported by pkg_resources
+missing module named pkg_resources.extern.packaging - imported by pkg_resources.extern, pkg_resources
+missing module named pkg_resources.extern.appdirs - imported by pkg_resources.extern, pkg_resources
+missing module named 'pkg_resources.extern.six.moves' - imported by pkg_resources, pkg_resources._vendor.packaging.requirements
+missing module named pkg_resources.extern.six - imported by pkg_resources.extern, pkg_resources
+missing module named resource - imported by posix, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named posix - imported by os, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named _posixsubprocess - imported by subprocess, multiprocessing.util, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named org - imported by pickle, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named readline - imported by cmd, code, pdb, C:\Users\lopez\Desktop\New folder\Start.py
+excluded module named _frozen_importlib - imported by importlib, importlib.abc, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named _frozen_importlib_external - imported by importlib._bootstrap, importlib, importlib.abc, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named _winreg - imported by platform, C:\Users\lopez\Desktop\New folder\Start.py, pkg_resources._vendor.appdirs
+missing module named _scproxy - imported by urllib.request
+missing module named java - imported by platform, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named 'java.lang' - imported by platform, C:\Users\lopez\Desktop\New folder\Start.py, xml.sax._exceptions
+missing module named vms_lib - imported by platform, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named termios - imported by tty, getpass, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named urllib.unquote - imported by urllib, asn1crypto._iri
+missing module named urllib.quote - imported by urllib, asn1crypto._iri
+missing module named grp - imported by shutil, tarfile, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named pwd - imported by posixpath, shutil, tarfile, http.server, webbrowser, getpass, distutils.util, C:\Users\lopez\Desktop\New folder\Start.py, netrc
+missing module named _dummy_threading - imported by dummy_threading, C:\Users\lopez\Desktop\New folder\Start.py
+missing module named 'org.python' - imported by copy, C:\Users\lopez\Desktop\New folder\Start.py, xml.sax
+missing module named port_v2 - imported by PyQt5.uic.properties
+missing module named cStringIO - imported by asn1crypto.core, paramiko.py3compat, PyQt5.uic.port_v2.string_io
+missing module named copy_reg - imported by cStringIO
+missing module named sets - imported by pytz.tzinfo
+missing module named UserDict - imported by asn1crypto._ordereddict, pytz.lazy
+runtime module named six.moves - imported by cryptography.x509.general_name
+missing module named urlparse - imported by asn1crypto._iri
+missing module named thread - imported by paramiko.win_pageant
+missing module named fcntl - imported by paramiko.agent
+missing module named gssapi - imported by paramiko.ssh_gss

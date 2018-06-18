@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>log_uc453jpg.jpg</file>
+  </qresource>
+</RCC>

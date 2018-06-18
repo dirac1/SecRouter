@@ -1,0 +1,40 @@
+Folder PATH listing
+Volume serial number is FE7D-A8F7
+tree > tree.txt /a /f
+C:.
+|   arp_status.txt
+|   bridge_status.txt
+|   client_state.txt
+|   config.txt
+|   estados.txt
+|   Ipcalcs.py
+|   Login2.pyw
+|   Login2.ui
+|   Main.pyw
+|   nat
+|   ntp.txt
+|   phisical_interface_status.txt
+|   ssh.log
+|   static_route_status.txt
+|   status.txt
+|   sysadmin.txt
+|   tree.txt
+|   View_Cache.py
+|   vlan_status.txt
+|   __init()__.py
+|   
++---Add_Public_keys
+|       Add_key.pyw
+|       
++---Main Window
+|       ico2.png
+|       icon.png
+|       Main.ui
+|       
++---New folder
++---View cache
+|       View.ui
+|       
+\---__pycache__
+        View_Cache.cpython-36.pyc
+        
