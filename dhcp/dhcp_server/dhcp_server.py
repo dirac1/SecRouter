@@ -65,7 +65,7 @@ def main(interface,network,prefix,gateway,Pool_Range_Start,Pool_Range_Stop,DNS_S
     # ------------- writing the configuration file ------------- 
     dhcpd = open('/etc/dhcpcd.d/'+ interface + '.conf','a')
     conf = [ 'subnet ' + network + ' netmask ' + netmask + ' ' + '{', \
-             'interface ' + interface + ';', \
+             #'interface ' + interface + ';', \
              'authoritative;', \
              'range ' + Pool_Range[0] + ' ' + Pool_Range[1] + ';', \
              'option routers ' +  gateway + ';', \

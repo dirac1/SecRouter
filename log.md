@@ -293,8 +293,15 @@ Secrouter
 
 **2018-05-04**
 
-Secrouter
+secrouter
 ---------
 * Debugging the GUI
 * aestethical polishing in the GUI
 * Fixed bugs in backup\_restore.py and ntp.py
+
+**2018-06-16**
+
+secrouter
+---------
+* Polishing the GUI and fixing bugs in the system
+* Fixing the SME and SOHO rules

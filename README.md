@@ -28,6 +28,10 @@ Basado en estas premisas y utilizando Python como infraestructura principal, Nos
 * Un modulo especializado para la administración del sistema, rico en herramientas de redes
 * Sistema de monitoreo gracias a la herramienta web netdata
 
+
+Install
+-------
+
 Screenshots
 -----------
 ### Home
