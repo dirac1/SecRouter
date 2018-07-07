@@ -23,6 +23,7 @@
 -A INPUT -p tcp -m state --state NEW,ESTABLISHED -m tcp --dport 443 -j ACCEPT
 # Allow port 19999/tcp for device monitoring via browser using netdata
 -A INPUT -p tcp -m tcp --dport 19999 -j ACCEPT
+-A INPUT -p tcp -m tcp --sport 19999 -j ACCEPT
 # limit number of packages per minute 
 -A INPUT -m limit --limit 1000/min -j LOG --log-prefix "iptables_INPUT_denied: "
 -A INPUT -j REJECT --reject-with icmp-port-unreachable
@@ -38,6 +39,8 @@
 -A OUTPUT -p icmp -j ACCEPT
 -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
 -A OUTPUT -p udp -m udp --sport 53 -j ACCEPT
+-A OUTPUT -p tcp -m tcp --sport 19999 -j ACCEPT
+-A OUTPUT -p tcp -m tcp --dport 19999 -j ACCEPT
 -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -m tcp --sport 53 -j ACCEPT
 -A OUTPUT -p udp -m udp --dport 123 -j ACCEPT
 -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -m tcp --sport 22 -j ACCEPT
